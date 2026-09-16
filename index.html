@@ -1,14 +1,16 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     >
 
-    <title>Кофейня</title>
+    <meta name="theme-color" content="#f5f7f4">
+
+    <title>Чистый Дом</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -17,273 +19,1085 @@
 
     <div class="app">
 
-        <!-- Верхняя панель -->
+        <!-- ========================================
+             HEADER
+        ========================================= -->
+
         <header class="header">
-            <div>
-                <span class="header-label">Добро пожаловать</span>
-                <h1>Кофейня</h1>
+
+            <div class="brand">
+                <span class="brand-label">
+                    ПРОФЕССИОНАЛЬНАЯ УБОРКА
+                </span>
+
+                <h1>
+                    Чистый Дом
+                </h1>
             </div>
 
-            <button class="profile-button" id="profileButton">
+            <button
+                class="profile-button"
+                id="profileButton"
+                type="button"
+            >
                 <span>👤</span>
             </button>
+
         </header>
 
 
-        <!-- Приветственный блок -->
-        <section class="hero">
+        <!-- ========================================
+             HOME
+        ========================================= -->
 
-            <div class="hero-content">
-                <span class="hero-label">СВЕЖЕОБЖАРЕННЫЙ КОФЕ</span>
+        <main id="homePage" class="page active">
+
+            <!-- HERO -->
+
+            <section class="hero">
+
+                <div class="hero-content">
+
+                    <span class="hero-label">
+                        ЧИСТОТА БЕЗ ЛИШНИХ ХЛОПОТ
+                    </span>
+
+                    <h2>
+                        Вернём вашему дому
+                        чистоту и свежесть
+                    </h2>
+
+                    <p>
+                        Закажите профессиональную уборку
+                        с выездом к вам.
+                    </p>
+
+                    <button
+                        class="primary-button hero-button"
+                        id="startOrderButton"
+                        type="button"
+                    >
+                        Рассчитать стоимость
+                    </button>
+
+                </div>
+
+                <div class="hero-decoration">
+                    ✨
+                </div>
+
+            </section>
+
+
+            <!-- SERVICES -->
+
+            <section class="services-section">
+
+                <div class="section-header">
+
+                    <div>
+                        <span class="section-label">
+                            НАШИ УСЛУГИ
+                        </span>
+
+                        <h2>
+                            Выберите уборку
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div class="services-list">
+
+                    <!-- SERVICE 1 -->
+
+                    <article
+                        class="service-card"
+                        data-service="maintenance"
+                    >
+
+                        <div class="service-icon">
+                            🧹
+                        </div>
+
+                        <div class="service-info">
+
+                            <h3>
+                                Поддерживающая уборка
+                            </h3>
+
+                            <p>
+                                Поддерживаем чистоту
+                                и порядок в доме.
+                            </p>
+
+                            <strong>
+                                от 1 500 ₽
+                            </strong>
+
+                        </div>
+
+                        <button
+                            class="service-arrow"
+                            type="button"
+                            aria-label="Выбрать услугу"
+                        >
+                            →
+                        </button>
+
+                    </article>
+
+
+                    <!-- SERVICE 2 -->
+
+                    <article
+                        class="service-card"
+                        data-service="general"
+                    >
+
+                        <div class="service-icon">
+                            ✨
+                        </div>
+
+                        <div class="service-info">
+
+                            <h3>
+                                Генеральная уборка
+                            </h3>
+
+                            <p>
+                                Глубокая уборка всех
+                                основных зон.
+                            </p>
+
+                            <strong>
+                                от 2 500 ₽
+                            </strong>
+
+                        </div>
+
+                        <button
+                            class="service-arrow"
+                            type="button"
+                            aria-label="Выбрать услугу"
+                        >
+                            →
+                        </button>
+
+                    </article>
+
+
+                    <!-- SERVICE 3 -->
+
+                    <article
+                        class="service-card"
+                        data-service="windows"
+                    >
+
+                        <div class="service-icon">
+                            🪟
+                        </div>
+
+                        <div class="service-info">
+
+                            <h3>
+                                Мытьё окон
+                            </h3>
+
+                            <p>
+                                Чистые окна без разводов
+                                и лишних хлопот.
+                            </p>
+
+                            <strong>
+                                от 800 ₽
+                            </strong>
+
+                        </div>
+
+                        <button
+                            class="service-arrow"
+                            type="button"
+                            aria-label="Выбрать услугу"
+                        >
+                            →
+                        </button>
+
+                    </article>
+
+
+                    <!-- SERVICE 4 -->
+
+                    <article
+                        class="service-card"
+                        data-service="renovation"
+                    >
+
+                        <div class="service-icon">
+                            🏠
+                        </div>
+
+                        <div class="service-info">
+
+                            <h3>
+                                Уборка после ремонта
+                            </h3>
+
+                            <p>
+                                Удалим строительную пыль
+                                и приведём помещение в порядок.
+                            </p>
+
+                            <strong>
+                                от 4 000 ₽
+                            </strong>
+
+                        </div>
+
+                        <button
+                            class="service-arrow"
+                            type="button"
+                            aria-label="Выбрать услугу"
+                        >
+                            →
+                        </button>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- WHY US -->
+
+            <section class="advantages-section">
+
+                <div class="section-header">
+
+                    <div>
+                        <span class="section-label">
+                            ПОЧЕМУ МЫ
+                        </span>
+
+                        <h2>
+                            Всё просто
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div class="advantages-grid">
+
+                    <div class="advantage">
+
+                        <div class="advantage-icon">
+                            ✓
+                        </div>
+
+                        <strong>
+                            Быстро
+                        </strong>
+
+                        <span>
+                            Подберём удобное
+                            время
+                        </span>
+
+                    </div>
+
+
+                    <div class="advantage">
+
+                        <div class="advantage-icon">
+                            🛡
+                        </div>
+
+                        <strong>
+                            Надёжно
+                        </strong>
+
+                        <span>
+                            Аккуратные
+                            специалисты
+                        </span>
+
+                    </div>
+
+
+                    <div class="advantage">
+
+                        <div class="advantage-icon">
+                            ₽
+                        </div>
+
+                        <strong>
+                            Честная цена
+                        </strong>
+
+                        <span>
+                            Стоимость известна
+                            заранее
+                        </span>
+
+                    </div>
+
+
+                    <div class="advantage">
+
+                        <div class="advantage-icon">
+                            ★
+                        </div>
+
+                        <strong>
+                            Качество
+                        </strong>
+
+                        <span>
+                            Работаем
+                            на результат
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- ========================================
+             ORDER PAGE
+        ========================================= -->
+
+        <main
+            id="orderPage"
+            class="page"
+            hidden
+        >
+
+            <div class="page-header">
+
+                <button
+                    class="back-button"
+                    id="orderBackButton"
+                    type="button"
+                >
+                    ←
+                </button>
+
+                <div>
+
+                    <span class="section-label">
+                        ЗАКАЗ
+                    </span>
+
+                    <h2>
+                        Рассчитаем стоимость
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <!-- SERVICE TYPE -->
+
+            <section class="form-section">
+
+                <div class="form-section-header">
+
+                    <span class="step-number">
+                        1
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Тип уборки
+                        </h3>
+
+                        <p>
+                            Выберите нужную услугу
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="service-options"
+                    id="serviceOptions"
+                >
+
+                    <button
+                        class="service-option"
+                        data-service="maintenance"
+                        type="button"
+                    >
+
+                        <span class="option-icon">
+                            🧹
+                        </span>
+
+                        <span class="option-content">
+
+                            <strong>
+                                Поддерживающая
+                            </strong>
+
+                            <small>
+                                от 1 500 ₽
+                            </small>
+
+                        </span>
+
+                        <span class="option-check">
+                            ✓
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        class="service-option"
+                        data-service="general"
+                        type="button"
+                    >
+
+                        <span class="option-icon">
+                            ✨
+                        </span>
+
+                        <span class="option-content">
+
+                            <strong>
+                                Генеральная
+                            </strong>
+
+                            <small>
+                                от 2 500 ₽
+                            </small>
+
+                        </span>
+
+                        <span class="option-check">
+                            ✓
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        class="service-option"
+                        data-service="windows"
+                        type="button"
+                    >
+
+                        <span class="option-icon">
+                            🪟
+                        </span>
+
+                        <span class="option-content">
+
+                            <strong>
+                                Мытьё окон
+                            </strong>
+
+                            <small>
+                                от 800 ₽
+                            </small>
+
+                        </span>
+
+                        <span class="option-check">
+                            ✓
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        class="service-option"
+                        data-service="renovation"
+                        type="button"
+                    >
+
+                        <span class="option-icon">
+                            🏠
+                        </span>
+
+                        <span class="option-content">
+
+                            <strong>
+                                После ремонта
+                            </strong>
+
+                            <small>
+                                от 4 000 ₽
+                            </small>
+
+                        </span>
+
+                        <span class="option-check">
+                            ✓
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- AREA -->
+
+            <section class="form-section">
+
+                <div class="form-section-header">
+
+                    <span class="step-number">
+                        2
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Площадь помещения
+                        </h3>
+
+                        <p>
+                            Укажите примерную площадь
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="area-input-wrapper">
+
+                    <input
+                        id="areaInput"
+                        class="area-input"
+                        type="number"
+                        min="1"
+                        max="1000"
+                        value="50"
+                        placeholder="50"
+                    >
+
+                    <span>
+                        м²
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- ADDITIONAL SERVICES -->
+
+            <section class="form-section">
+
+                <div class="form-section-header">
+
+                    <span class="step-number">
+                        3
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Дополнительно
+                        </h3>
+
+                        <p>
+                            Можно добавить дополнительные услуги
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="additional-options">
+
+                    <label class="checkbox-option">
+
+                        <input
+                            type="checkbox"
+                            id="windowsOption"
+                            value="windows"
+                        >
+
+                        <span class="custom-checkbox">
+                            ✓
+                        </span>
+
+                        <span class="checkbox-content">
+
+                            <strong>
+                                Мытьё окон
+                            </strong>
+
+                            <small>
+                                +800 ₽
+                            </small>
+
+                        </span>
+
+                    </label>
+
+
+                    <label class="checkbox-option">
+
+                        <input
+                            type="checkbox"
+                            id="fridgeOption"
+                            value="fridge"
+                        >
+
+                        <span class="custom-checkbox">
+                            ✓
+                        </span>
+
+                        <span class="checkbox-content">
+
+                            <strong>
+                                Мытьё холодильника
+                            </strong>
+
+                            <small>
+                                +500 ₽
+                            </small>
+
+                        </span>
+
+                    </label>
+
+
+                    <label class="checkbox-option">
+
+                        <input
+                            type="checkbox"
+                            id="ovenOption"
+                            value="oven"
+                        >
+
+                        <span class="custom-checkbox">
+                            ✓
+                        </span>
+
+                        <span class="checkbox-content">
+
+                            <strong>
+                                Мытьё духовки
+                            </strong>
+
+                            <small>
+                                +400 ₽
+                            </small>
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+            </section>
+
+
+            <!-- DATE AND TIME -->
+
+            <section class="form-section">
+
+                <div class="form-section-header">
+
+                    <span class="step-number">
+                        4
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Дата и время
+                        </h3>
+
+                        <p>
+                            Когда вам удобно?
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="datetime-grid">
+
+                    <div class="input-group">
+
+                        <label for="dateInput">
+                            Дата
+                        </label>
+
+                        <input
+                            id="dateInput"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label for="timeInput">
+                            Время
+                        </label>
+
+                        <input
+                            id="timeInput"
+                            type="time"
+                        >
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ADDRESS -->
+
+            <section class="form-section">
+
+                <div class="form-section-header">
+
+                    <span class="step-number">
+                        5
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Адрес
+                        </h3>
+
+                        <p>
+                            Куда приехать специалисту?
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label for="addressInput">
+                        Адрес
+                    </label>
+
+                    <input
+                        id="addressInput"
+                        type="text"
+                        placeholder="Улица, дом, квартира"
+                        autocomplete="street-address"
+                    >
+
+                </div>
+
+            </section>
+
+
+            <!-- CONTACT -->
+
+            <section class="form-section">
+
+                <div class="form-section-header">
+
+                    <span class="step-number">
+                        6
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Контактные данные
+                        </h3>
+
+                        <p>
+                            Чтобы мы могли связаться с вами
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-fields">
+
+                    <div class="input-group">
+
+                        <label for="nameInput">
+                            Имя
+                        </label>
+
+                        <input
+                            id="nameInput"
+                            type="text"
+                            placeholder="Ваше имя"
+                            autocomplete="name"
+                        >
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label for="phoneInput">
+                            Телефон
+                        </label>
+
+                        <input
+                            id="phoneInput"
+                            type="tel"
+                            placeholder="+7 (___) ___-__-__"
+                            autocomplete="tel"
+                        >
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- PRICE -->
+
+            <section class="price-card">
+
+                <div>
+
+                    <span>
+                        Предварительная стоимость
+                    </span>
+
+                    <strong id="totalPrice">
+                        2 500 ₽
+                    </strong>
+
+                </div>
+
+                <small>
+                    Точная стоимость будет подтверждена
+                    после проверки заявки.
+                </small>
+
+            </section>
+
+
+            <!-- SUBMIT -->
+
+            <button
+                class="primary-button submit-button"
+                id="submitOrderButton"
+                type="button"
+            >
+                Оформить заявку
+            </button>
+
+
+            <p class="form-note">
+                Нажимая кнопку, вы отправляете заявку
+                на уборку.
+            </p>
+
+        </main>
+
+
+        <!-- ========================================
+             SUCCESS PAGE
+        ========================================= -->
+
+        <main
+            id="successPage"
+            class="page"
+            hidden
+        >
+
+            <div class="success-screen">
+
+                <div class="success-icon">
+                    ✓
+                </div>
+
+                <span class="section-label">
+                    ЗАЯВКА ПРИНЯТА
+                </span>
 
                 <h2>
-                    Твой кофе уже<br>
-                    ждёт тебя
+                    Спасибо за заявку
                 </h2>
 
                 <p>
-                    Закажи любимый напиток
-                    прямо в Telegram.
+                    Мы получили ваши данные.
+                    Специалист свяжется с вами
+                    для подтверждения заказа.
                 </p>
 
-                <button class="hero-button" id="heroButton">
-                    Посмотреть меню
-                </button>
-            </div>
 
-        </section>
+                <div class="order-summary">
 
+                    <div class="summary-row">
 
-        <!-- Категории -->
-        <section class="categories-section">
+                        <span>
+                            Услуга
+                        </span>
 
-            <div class="section-header">
-                <h2>Категории</h2>
-            </div>
+                        <strong id="summaryService">
+                            Генеральная уборка
+                        </strong>
 
-            <div class="categories">
-
-                <button class="category active" data-category="coffee">
-                    <span class="category-icon">☕</span>
-                    <span>Кофе</span>
-                </button>
-
-                <button class="category" data-category="tea">
-                    <span class="category-icon">🍵</span>
-                    <span>Чай</span>
-                </button>
-
-                <button class="category" data-category="dessert">
-                    <span class="category-icon">🍰</span>
-                    <span>Десерты</span>
-                </button>
-
-                <button class="category" data-category="breakfast">
-                    <span class="category-icon">🥐</span>
-                    <span>Завтраки</span>
-                </button>
-
-            </div>
-
-        </section>
+                    </div>
 
 
-        <!-- Популярное -->
-        <section class="products-section">
+                    <div class="summary-row">
 
-            <div class="section-header">
-                <h2>Популярное</h2>
+                        <span>
+                            Дата
+                        </span>
 
-                <button class="show-all" id="showAll">
-                    Все
-                </button>
-            </div>
+                        <strong id="summaryDate">
+                            —
+                        </strong>
+
+                    </div>
 
 
-            <div class="products" id="products">
+                    <div class="summary-row">
 
-                <!-- Товар 1 -->
-                <article
-                    class="product-card"
-                    data-category="coffee"
+                        <span>
+                            Время
+                        </span>
+
+                        <strong id="summaryTime">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Стоимость
+                        </span>
+
+                        <strong id="summaryPrice">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="primary-button"
+                    id="backHomeButton"
+                    type="button"
                 >
-
-                    <div class="product-image">
-                        <span>☕</span>
-                    </div>
-
-                    <div class="product-info">
-
-                        <h3>Капучино</h3>
-
-                        <p>
-                            Эспрессо, молоко,
-                            нежная пенка
-                        </p>
-
-                        <div class="product-bottom">
-
-                            <strong>220 ₽</strong>
-
-                            <button
-                                class="add-button"
-                                data-product="Капучино"
-                                data-price="220"
-                            >
-                                +
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <!-- Товар 2 -->
-                <article
-                    class="product-card"
-                    data-category="coffee"
-                >
-
-                    <div class="product-image">
-                        <span>☕</span>
-                    </div>
-
-                    <div class="product-info">
-
-                        <h3>Латте</h3>
-
-                        <p>
-                            Эспрессо и
-                            горячее молоко
-                        </p>
-
-                        <div class="product-bottom">
-
-                            <strong>240 ₽</strong>
-
-                            <button
-                                class="add-button"
-                                data-product="Латте"
-                                data-price="240"
-                            >
-                                +
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <!-- Товар 3 -->
-                <article
-                    class="product-card"
-                    data-category="dessert"
-                >
-
-                    <div class="product-image">
-                        <span>🍰</span>
-                    </div>
-
-                    <div class="product-info">
-
-                        <h3>Чизкейк</h3>
-
-                        <p>
-                            Нежный сливочный
-                            десерт
-                        </p>
-
-                        <div class="product-bottom">
-
-                            <strong>280 ₽</strong>
-
-                            <button
-                                class="add-button"
-                                data-product="Чизкейк"
-                                data-price="280"
-                            >
-                                +
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <!-- Товар 4 -->
-                <article
-                    class="product-card"
-                    data-category="breakfast"
-                >
-
-                    <div class="product-image">
-                        <span>🥐</span>
-                    </div>
-
-                    <div class="product-info">
-
-                        <h3>Круассан</h3>
-
-                        <p>
-                            Свежая выпечка
-                            с маслом
-                        </p>
-
-                        <div class="product-bottom">
-
-                            <strong>190 ₽</strong>
-
-                            <button
-                                class="add-button"
-                                data-product="Круассан"
-                                data-price="190"
-                            >
-                                +
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
+                    Вернуться на главную
+                </button>
 
             </div>
 
-        </section>
+        </main>
 
 
-        <!-- Нижняя навигация -->
+        <!-- ========================================
+             PROFILE
+        ========================================= -->
+
+        <div
+            class="modal"
+            id="profileModal"
+            hidden
+        >
+
+            <div class="modal-overlay"></div>
+
+            <div class="modal-content">
+
+                <button
+                    class="modal-close"
+                    id="closeProfileButton"
+                    type="button"
+                >
+                    ×
+                </button>
+
+                <div class="modal-icon">
+                    👤
+                </div>
+
+                <span class="section-label">
+                    ПРОФИЛЬ
+                </span>
+
+                <h2>
+                    Ваш профиль
+                </h2>
+
+                <p id="profileText">
+                    Загрузка данных...
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================
+             BOTTOM NAVIGATION
+        ========================================= -->
+
         <nav class="bottom-nav">
 
-            <button class="nav-item active">
+            <button
+                class="nav-item active"
+                id="homeNav"
+                type="button"
+            >
 
-                <span class="nav-icon">⌂</span>
+                <span class="nav-icon">
+                    ⌂
+                </span>
 
-                <span>Главная</span>
+                <span>
+                    Главная
+                </span>
 
             </button>
 
 
             <button
                 class="nav-item"
-                id="cartNav"
+                id="orderNav"
+                type="button"
             >
 
-                <span class="nav-icon">🛒</span>
+                <span class="nav-icon">
+                    +
+                </span>
 
-                <span>Корзина</span>
-
-                <span
-                    class="cart-badge"
-                    id="cartBadge"
-                >
-                    0
+                <span>
+                    Заказать
                 </span>
 
             </button>
@@ -292,11 +1106,16 @@
             <button
                 class="nav-item"
                 id="profileNav"
+                type="button"
             >
 
-                <span class="nav-icon">👤</span>
+                <span class="nav-icon">
+                    👤
+                </span>
 
-                <span>Профиль</span>
+                <span>
+                    Профиль
+                </span>
 
             </button>
 
@@ -305,9 +1124,13 @@
     </div>
 
 
+    <!-- ========================================
+         TELEGRAM
+    ========================================= -->
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <script src="script.js"></script>
 
 </body>
 </html>
-```

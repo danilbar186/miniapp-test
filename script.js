@@ -1,4 +1,3 @@
-javascript
 // ========================================
 // TELEGRAM MINI APP
 // ========================================
@@ -15,358 +14,641 @@ if (tg) {
     tg.expand();
 
     if (tg.setHeaderColor) {
-        tg.setHeaderColor("#f6f6f4");
+        tg.setHeaderColor("#f5f7f4");
     }
 
     if (tg.setBackgroundColor) {
-        tg.setBackgroundColor("#f6f6f4");
+        tg.setBackgroundColor("#f5f7f4");
+    }
+
+    if (tg.enableClosingConfirmation) {
+        tg.enableClosingConfirmation();
     }
 }
 
 
 // ========================================
-// ЭЛЕМЕНТЫ
+// СТРАНИЦЫ
 // ========================================
 
-const categories = document.querySelectorAll(".category");
-const products = document.querySelectorAll(".product-card");
-const addButtons = document.querySelectorAll(".add-button");
+const homePage = document.getElementById("homePage");
+const orderPage = document.getElementById("orderPage");
+const successPage = document.getElementById("successPage");
 
-const cartBadge = document.getElementById("cartBadge");
 
-const heroButton = document.getElementById("heroButton");
-const showAllButton = document.getElementById("showAll");
+// ========================================
+// НАВИГАЦИЯ
+// ========================================
 
-const cartNav = document.getElementById("cartNav");
+const homeNav = document.getElementById("homeNav");
+const orderNav = document.getElementById("orderNav");
 const profileNav = document.getElementById("profileNav");
 
-const profileButton = document.getElementById("profileButton");
+const startOrderButton =
+    document.getElementById("startOrderButton");
 
+const orderBackButton =
+    document.getElementById("orderBackButton");
 
-// ========================================
-// КОРЗИНА
-// ========================================
-
-let cart = [];
-
-
-// ========================================
-// ОБНОВЛЕНИЕ СЧЁТЧИКА
-// ========================================
-
-function updateCartBadge() {
-
-    const totalItems = cart.reduce(
-        (sum, item) => sum + item.quantity,
-        0
-    );
-
-    cartBadge.textContent = totalItems;
-
-    if (totalItems > 0) {
-        cartBadge.style.display = "flex";
-    } else {
-        cartBadge.style.display = "none";
-    }
-}
-
-
-// ========================================
-// ДОБАВЛЕНИЕ ТОВАРА
-// ========================================
-
-function addToCart(name, price) {
-
-    const existingProduct = cart.find(
-        item => item.name === name
-    );
-
-    if (existingProduct) {
-
-        existingProduct.quantity += 1;
-
-    } else {
-
-        cart.push({
-            name: name,
-            price: Number(price),
-            quantity: 1
-        });
-
-    }
-
-    updateCartBadge();
-
-    showAddedMessage(name);
-
-    if (tg && tg.HapticFeedback) {
-        tg.HapticFeedback.impactOccurred("light");
-    }
-}
-
-
-// ========================================
-// УВЕДОМЛЕНИЕ О ДОБАВЛЕНИИ
-// ========================================
-
-function showAddedMessage(name) {
-
-    const message = document.createElement("div");
-
-    message.textContent = `${name} добавлен в корзину`;
-
-    message.style.position = "fixed";
-    message.style.left = "50%";
-    message.style.bottom = "100px";
-    message.style.transform = "translateX(-50%)";
-
-    message.style.padding = "12px 18px";
-
-    message.style.background = "#222";
-    message.style.color = "#fff";
-
-    message.style.borderRadius = "14px";
-
-    message.style.fontSize = "13px";
-    message.style.fontWeight = "600";
-
-    message.style.zIndex = "999";
-
-    message.style.boxShadow =
-        "0 8px 25px rgba(0,0,0,0.2)";
-
-    document.body.appendChild(message);
-
-
-    setTimeout(() => {
-
-        message.style.opacity = "0";
-
-        message.style.transition =
-            "opacity 0.25s ease";
-
-    }, 1200);
-
-
-    setTimeout(() => {
-
-        message.remove();
-
-    }, 1500);
-}
-
-
-// ========================================
-// КНОПКИ ДОБАВЛЕНИЯ
-// ========================================
-
-addButtons.forEach(button => {
-
-    button.addEventListener("click", event => {
-
-        event.stopPropagation();
-
-        const name =
-            button.dataset.product;
-
-        const price =
-            button.dataset.price;
-
-        addToCart(name, price);
-
-    });
-
-});
-
-
-// ========================================
-// ФИЛЬТРАЦИЯ КАТЕГОРИЙ
-// ========================================
-
-categories.forEach(category => {
-
-    category.addEventListener("click", () => {
-
-        categories.forEach(item => {
-            item.classList.remove("active");
-        });
-
-        category.classList.add("active");
-
-
-        const selectedCategory =
-            category.dataset.category;
-
-
-        products.forEach(product => {
-
-            const productCategory =
-                product.dataset.category;
-
-
-            if (
-                selectedCategory === "all" ||
-                productCategory === selectedCategory
-            ) {
-
-                product.style.display = "block";
-
-                product.style.animation =
-                    "cardAppear 0.35s ease both";
-
-            } else {
-
-                product.style.display = "none";
-
-            }
-
-        });
-
-
-        if (tg && tg.HapticFeedback) {
-            tg.HapticFeedback.selectionChanged();
-        }
-
-    });
-
-});
-
-
-// ========================================
-// ПОКАЗАТЬ ВСЕ ТОВАРЫ
-// ========================================
-
-showAllButton.addEventListener("click", () => {
-
-    categories.forEach(item => {
-        item.classList.remove("active");
-    });
-
-
-    products.forEach(product => {
-
-        product.style.display = "block";
-
-        product.style.animation =
-            "cardAppear 0.35s ease both";
-
-    });
-
-
-    if (tg && tg.HapticFeedback) {
-        tg.HapticFeedback.selectionChanged();
-    }
-
-});
-
-
-// ========================================
-// КНОПКА HERO
-// ========================================
-
-heroButton.addEventListener("click", () => {
-
-    const productsSection =
-        document.querySelector(".products-section");
-
-    productsSection.scrollIntoView({
-        behavior: "smooth"
-    });
-
-});
-
-
-// ========================================
-// КОРЗИНА
-// ========================================
-
-cartNav.addEventListener("click", () => {
-
-    if (cart.length === 0) {
-
-        showSimpleMessage(
-            "Корзина пока пустая"
-        );
-
-        return;
-    }
-
-
-    let text = "Ваша корзина:\n\n";
-
-    let total = 0;
-
-
-    cart.forEach(item => {
-
-        const itemTotal =
-            item.price * item.quantity;
-
-        total += itemTotal;
-
-        text +=
-            `${item.name} × ${item.quantity} — ${itemTotal} ₽\n`;
-
-    });
-
-
-    text += `\nИтого: ${total} ₽`;
-
-
-    showSimpleMessage(text);
-
-});
+const backHomeButton =
+    document.getElementById("backHomeButton");
 
 
 // ========================================
 // ПРОФИЛЬ
 // ========================================
 
-profileNav.addEventListener("click", () => {
+const profileButton =
+    document.getElementById("profileButton");
 
-    openProfile();
+const profileModal =
+    document.getElementById("profileModal");
 
-});
+const closeProfileButton =
+    document.getElementById("closeProfileButton");
 
-profileButton.addEventListener("click", () => {
-
-    openProfile();
-
-});
+const profileText =
+    document.getElementById("profileText");
 
 
-function openProfile() {
+// ========================================
+// ФОРМА
+// ========================================
 
-    if (tg && tg.showPopup) {
+const serviceOptions =
+    document.querySelectorAll(".service-option");
 
-        tg.showPopup({
-            title: "Профиль",
-            message: getUserInfo(),
-            buttons: [
-                {
-                    id: "close",
-                    type: "close",
-                    text: "Закрыть"
-                }
-            ]
+const serviceCards =
+    document.querySelectorAll(".service-card");
+
+const areaInput =
+    document.getElementById("areaInput");
+
+const windowsOption =
+    document.getElementById("windowsOption");
+
+const fridgeOption =
+    document.getElementById("fridgeOption");
+
+const ovenOption =
+    document.getElementById("ovenOption");
+
+const dateInput =
+    document.getElementById("dateInput");
+
+const timeInput =
+    document.getElementById("timeInput");
+
+const addressInput =
+    document.getElementById("addressInput");
+
+const nameInput =
+    document.getElementById("nameInput");
+
+const phoneInput =
+    document.getElementById("phoneInput");
+
+const totalPrice =
+    document.getElementById("totalPrice");
+
+const submitOrderButton =
+    document.getElementById("submitOrderButton");
+
+
+// ========================================
+// ИТОГОВЫЕ ДАННЫЕ
+// ========================================
+
+const summaryService =
+    document.getElementById("summaryService");
+
+const summaryDate =
+    document.getElementById("summaryDate");
+
+const summaryTime =
+    document.getElementById("summaryTime");
+
+const summaryPrice =
+    document.getElementById("summaryPrice");
+
+
+// ========================================
+// СОСТОЯНИЕ ПРИЛОЖЕНИЯ
+// ========================================
+
+let selectedService = "general";
+
+
+// ========================================
+// ЦЕНЫ
+// ========================================
+
+const servicePrices = {
+
+    maintenance: 1500,
+
+    general: 2500,
+
+    windows: 800,
+
+    renovation: 4000
+
+};
+
+
+const serviceNames = {
+
+    maintenance: "Поддерживающая уборка",
+
+    general: "Генеральная уборка",
+
+    windows: "Мытьё окон",
+
+    renovation: "Уборка после ремонта"
+
+};
+
+
+// ========================================
+// ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ
+// ========================================
+
+const additionalPrices = {
+
+    windows: 800,
+
+    fridge: 500,
+
+    oven: 400
+
+};
+
+
+// ========================================
+// ПЕРЕКЛЮЧЕНИЕ СТРАНИЦ
+// ========================================
+
+function showPage(page) {
+
+    homePage.hidden = true;
+    orderPage.hidden = true;
+    successPage.hidden = true;
+
+    page.hidden = false;
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+// ========================================
+// АКТИВНАЯ НИЖНЯЯ КНОПКА
+// ========================================
+
+function setActiveNav(button) {
+
+    document
+        .querySelectorAll(".nav-item")
+        .forEach(item => {
+
+            item.classList.remove("active");
+
         });
 
-    } else {
-
-        showSimpleMessage(
-            getUserInfo()
-        );
-
+    if (button) {
+        button.classList.add("active");
     }
+}
+
+
+// ========================================
+// ОТКРЫТЬ ГЛАВНУЮ
+// ========================================
+
+function openHome() {
+
+    showPage(homePage);
+
+    setActiveNav(homeNav);
 
 }
 
 
 // ========================================
-// ИНФОРМАЦИЯ О ПОЛЬЗОВАТЕЛЕ
+// ОТКРЫТЬ ЗАКАЗ
 // ========================================
 
-function getUserInfo() {
+function openOrder() {
+
+    showPage(orderPage);
+
+    setActiveNav(orderNav);
+
+    calculatePrice();
+
+}
+
+
+// ========================================
+// КНОПКА "РАССЧИТАТЬ СТОИМОСТЬ"
+// ========================================
+
+startOrderButton.addEventListener(
+    "click",
+    () => {
+
+        openOrder();
+
+        haptic("light");
+
+    }
+);
+
+
+// ========================================
+// НИЖНЯЯ НАВИГАЦИЯ
+// ========================================
+
+homeNav.addEventListener(
+    "click",
+    () => {
+
+        openHome();
+
+        haptic("light");
+
+    }
+);
+
+
+orderNav.addEventListener(
+    "click",
+    () => {
+
+        openOrder();
+
+        haptic("light");
+
+    }
+);
+
+
+// ========================================
+// НАЗАД ИЗ ЗАКАЗА
+// ========================================
+
+orderBackButton.addEventListener(
+    "click",
+    () => {
+
+        openHome();
+
+        haptic("light");
+
+    }
+);
+
+
+// ========================================
+// КАРТОЧКИ УСЛУГ НА ГЛАВНОЙ
+// ========================================
+
+serviceCards.forEach(card => {
+
+    card.addEventListener(
+        "click",
+        () => {
+
+            const service =
+                card.dataset.service;
+
+            selectService(service);
+
+            openOrder();
+
+            haptic("light");
+
+        }
+    );
+
+});
+
+
+// ========================================
+// ВЫБОР УСЛУГИ
+// ========================================
+
+serviceOptions.forEach(option => {
+
+    option.addEventListener(
+        "click",
+        () => {
+
+            const service =
+                option.dataset.service;
+
+            selectService(service);
+
+            haptic("selection");
+
+        }
+    );
+
+});
+
+
+function selectService(service) {
+
+    selectedService = service;
+
+    serviceOptions.forEach(option => {
+
+        option.classList.remove("selected");
+
+    });
+
+    const selectedOption =
+        document.querySelector(
+            `.service-option[data-service="${service}"]`
+        );
+
+    if (selectedOption) {
+
+        selectedOption.classList.add(
+            "selected"
+        );
+
+    }
+
+    calculatePrice();
+
+}
+
+
+// ========================================
+// РАСЧЁТ СТОИМОСТИ
+// ========================================
+
+function calculatePrice() {
+
+    let price =
+        servicePrices[selectedService] || 0;
+
+
+    // ------------------------------------
+    // Площадь
+    // ------------------------------------
+
+    let area =
+        Number(areaInput.value);
+
+    if (!area || area < 1) {
+        area = 1;
+    }
+
+
+    /*
+        Для уборки помещения увеличиваем
+        стоимость за площадь.
+
+        Первые 50 м² входят в базовую цену.
+        Каждые дополнительные 10 м²
+        добавляют 100 ₽.
+    */
+
+    if (
+        selectedService === "maintenance" ||
+        selectedService === "general" ||
+        selectedService === "renovation"
+    ) {
+
+        if (area > 50) {
+
+            const extraArea =
+                area - 50;
+
+            const extraBlocks =
+                Math.ceil(extraArea / 10);
+
+            price +=
+                extraBlocks * 100;
+
+        }
+
+    }
+
+
+    // ------------------------------------
+    // Дополнительные услуги
+    // ------------------------------------
+
+    if (
+        windowsOption &&
+        windowsOption.checked
+    ) {
+
+        price += additionalPrices.windows;
+
+    }
+
+
+    if (
+        fridgeOption &&
+        fridgeOption.checked
+    ) {
+
+        price += additionalPrices.fridge;
+
+    }
+
+
+    if (
+        ovenOption &&
+        ovenOption.checked
+    ) {
+
+        price += additionalPrices.oven;
+
+    }
+
+
+    // ------------------------------------
+    // Вывод
+    // ------------------------------------
+
+    totalPrice.textContent =
+        formatPrice(price);
+
+
+    return price;
+
+}
+
+
+// ========================================
+// СЛУШАТЕЛИ ФОРМЫ
+// ========================================
+
+areaInput.addEventListener(
+    "input",
+    calculatePrice
+);
+
+
+windowsOption.addEventListener(
+    "change",
+    () => {
+
+        calculatePrice();
+
+        haptic("selection");
+
+    }
+);
+
+
+fridgeOption.addEventListener(
+    "change",
+    () => {
+
+        calculatePrice();
+
+        haptic("selection");
+
+    }
+);
+
+
+ovenOption.addEventListener(
+    "change",
+    () => {
+
+        calculatePrice();
+
+        haptic("selection");
+
+    }
+);
+
+
+// ========================================
+// ФОРМАТ ЦЕНЫ
+// ========================================
+
+function formatPrice(price) {
+
+    return (
+        Math.round(price)
+            .toLocaleString("ru-RU")
+        + " ₽"
+    );
+
+}
+
+
+// ========================================
+// ДАТА
+// ========================================
+
+function setMinDate() {
+
+    const today =
+        new Date();
+
+    const year =
+        today.getFullYear();
+
+    const month =
+        String(
+            today.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(2, "0");
+
+    const date =
+        `${year}-${month}-${day}`;
+
+    dateInput.min = date;
+
+    if (!dateInput.value) {
+        dateInput.value = date;
+    }
+
+}
+
+
+setMinDate();
+
+
+// ========================================
+// ПРОВЕРКА ВРЕМЕНИ
+// ========================================
+
+timeInput.addEventListener(
+    "change",
+    () => {
+
+        if (!timeInput.value) {
+            return;
+        }
+
+        const [hours, minutes] =
+            timeInput.value
+                .split(":")
+                .map(Number);
+
+        /*
+            Работаем условно с 08:00 до 21:00.
+        */
+
+        const totalMinutes =
+            hours * 60 + minutes;
+
+        const minMinutes =
+            8 * 60;
+
+        const maxMinutes =
+            21 * 60;
+
+        if (
+            totalMinutes < minMinutes ||
+            totalMinutes > maxMinutes
+        ) {
+
+            showAlert(
+                "Пожалуйста, выберите время с 08:00 до 21:00."
+            );
+
+            timeInput.value = "";
+
+        }
+
+    }
+);
+
+
+// ========================================
+// ПРОФИЛЬ
+// ========================================
+
+profileButton.addEventListener(
+    "click",
+    openProfile
+);
+
+
+profileNav.addEventListener(
+    "click",
+    openProfile
+);
+
+
+function openProfile() {
 
     if (
         tg &&
@@ -377,41 +659,434 @@ function getUserInfo() {
         const user =
             tg.initDataUnsafe.user;
 
-
         let name =
-            user.first_name || "Пользователь";
-
+            user.first_name ||
+            "Пользователь";
 
         if (user.last_name) {
-            name += ` ${user.last_name}`;
+
+            name +=
+                ` ${user.last_name}`;
+
         }
 
+        profileText.textContent =
+            `Вы вошли как ${name}.`;
 
-        return `Вы вошли как:\n${name}`;
+    } else {
+
+        profileText.textContent =
+            "Приложение открыто в браузере.";
 
     }
 
+    profileModal.hidden = false;
 
-    return "Приложение открыто в браузере.";
+    haptic("light");
 
 }
 
 
 // ========================================
-// ПРОСТОЕ УВЕДОМЛЕНИЕ
+// ЗАКРЫТЬ ПРОФИЛЬ
 // ========================================
 
-function showSimpleMessage(text) {
+closeProfileButton.addEventListener(
+    "click",
+    closeProfile
+);
 
-    if (tg && tg.showAlert) {
 
-        tg.showAlert(text);
+document
+    .querySelector(".modal-overlay")
+    .addEventListener(
+        "click",
+        closeProfile
+    );
+
+
+function closeProfile() {
+
+    profileModal.hidden = true;
+
+}
+
+
+// ========================================
+// ОФОРМЛЕНИЕ ЗАЯВКИ
+// ========================================
+
+submitOrderButton.addEventListener(
+    "click",
+    submitOrder
+);
+
+
+function submitOrder() {
+
+    // ------------------------------------
+    // Получаем данные
+    // ------------------------------------
+
+    const area =
+        Number(areaInput.value);
+
+    const address =
+        addressInput.value.trim();
+
+    const name =
+        nameInput.value.trim();
+
+    const phone =
+        phoneInput.value.trim();
+
+    const date =
+        dateInput.value;
+
+    const time =
+        timeInput.value;
+
+
+    // ------------------------------------
+    // Проверка услуги
+    // ------------------------------------
+
+    if (!selectedService) {
+
+        showAlert(
+            "Выберите тип уборки."
+        );
 
         return;
+
     }
 
 
-    alert(text);
+    // ------------------------------------
+    // Проверка площади
+    // ------------------------------------
+
+    if (!area || area < 1) {
+
+        showAlert(
+            "Укажите площадь помещения."
+        );
+
+        areaInput.focus();
+
+        return;
+
+    }
+
+
+    // ------------------------------------
+    // Проверка даты
+    // ------------------------------------
+
+    if (!date) {
+
+        showAlert(
+            "Выберите дату уборки."
+        );
+
+        dateInput.focus();
+
+        return;
+
+    }
+
+
+    // ------------------------------------
+    // Проверка времени
+    // ------------------------------------
+
+    if (!time) {
+
+        showAlert(
+            "Выберите удобное время."
+        );
+
+        timeInput.focus();
+
+        return;
+
+    }
+
+
+    // ------------------------------------
+    // Проверка адреса
+    // ------------------------------------
+
+    if (!address) {
+
+        showAlert(
+            "Укажите адрес."
+        );
+
+        addressInput.focus();
+
+        return;
+
+    }
+
+
+    // ------------------------------------
+    // Проверка имени
+    // ------------------------------------
+
+    if (!name) {
+
+        showAlert(
+            "Укажите ваше имя."
+        );
+
+        nameInput.focus();
+
+        return;
+
+    }
+
+
+    // ------------------------------------
+    // Проверка телефона
+    // ------------------------------------
+
+    if (!phone) {
+
+        showAlert(
+            "Укажите номер телефона."
+        );
+
+        phoneInput.focus();
+
+        return;
+
+    }
+
+
+    // ------------------------------------
+    // Расчёт
+    // ------------------------------------
+
+    const price =
+        calculatePrice();
+
+
+    // ------------------------------------
+    // Заполняем экран результата
+    // ------------------------------------
+
+    summaryService.textContent =
+        serviceNames[selectedService];
+
+    summaryDate.textContent =
+        formatDate(date);
+
+    summaryTime.textContent =
+        time;
+
+    summaryPrice.textContent =
+        formatPrice(price);
+
+
+    // ------------------------------------
+    // Формируем данные заявки
+    // ------------------------------------
+
+    const orderData = {
+
+        service:
+            selectedService,
+
+        serviceName:
+            serviceNames[selectedService],
+
+        area:
+            area,
+
+        windows:
+            windowsOption.checked,
+
+        fridge:
+            fridgeOption.checked,
+
+        oven:
+            ovenOption.checked,
+
+        date:
+            date,
+
+        time:
+            time,
+
+        address:
+            address,
+
+        name:
+            name,
+
+        phone:
+            phone,
+
+        price:
+            price
+
+    };
+
+
+    // ------------------------------------
+    // Сохраняем локально
+    // ------------------------------------
+
+    localStorage.setItem(
+        "cleaningLastOrder",
+        JSON.stringify(orderData)
+    );
+
+
+    // ------------------------------------
+    // Telegram
+    // ------------------------------------
+
+    /*
+        Пока здесь только подготовка данных.
+
+        На следующем этапе подключим
+        отправку заявки непосредственно
+        в Telegram-бот.
+    */
+
+    console.log(
+        "Новая заявка:",
+        orderData
+    );
+
+
+    // ------------------------------------
+    // Показываем результат
+    // ------------------------------------
+
+    showPage(successPage);
+
+    setActiveNav(null);
+
+    haptic("success");
+
+}
+
+
+// ========================================
+// ФОРМАТ ДАТЫ
+// ========================================
+
+function formatDate(date) {
+
+    if (!date) {
+        return "—";
+    }
+
+    const parts =
+        date.split("-");
+
+    if (parts.length !== 3) {
+        return date;
+    }
+
+    return (
+        `${parts[2]}.${parts[1]}.${parts[0]}`
+    );
+
+}
+
+
+// ========================================
+// ВОЗВРАТ НА ГЛАВНУЮ
+// ========================================
+
+backHomeButton.addEventListener(
+    "click",
+    () => {
+
+        openHome();
+
+        haptic("light");
+
+    }
+);
+
+
+// ========================================
+// УВЕДОМЛЕНИЯ
+// ========================================
+
+function showAlert(text) {
+
+    if (
+        tg &&
+        tg.showAlert
+    ) {
+
+        tg.showAlert(text);
+
+    } else {
+
+        alert(text);
+
+    }
+
+}
+
+
+// ========================================
+// HAPTIC FEEDBACK
+// ========================================
+
+function haptic(type) {
+
+    if (
+        !tg ||
+        !tg.HapticFeedback
+    ) {
+
+        return;
+
+    }
+
+
+    if (type === "success") {
+
+        tg.HapticFeedback.notificationOccurred(
+            "success"
+        );
+
+        return;
+
+    }
+
+
+    if (type === "error") {
+
+        tg.HapticFeedback.notificationOccurred(
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (type === "selection") {
+
+        tg.HapticFeedback.selectionChanged();
+
+        return;
+
+    }
+
+
+    tg.HapticFeedback.impactOccurred(
+        "light"
+    );
 
 }
 
@@ -420,5 +1095,8 @@ function showSimpleMessage(text) {
 // НАЧАЛЬНОЕ СОСТОЯНИЕ
 // ========================================
 
-updateCartBadge();
-```
+selectService("general");
+
+calculatePrice();
+
+openHome();
