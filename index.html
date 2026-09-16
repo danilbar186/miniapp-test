@@ -1,33 +1,313 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
 
-    <title>Моё приложение</title>
+    <title>Кофейня</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <main class="app">
+    <div class="app">
 
-        <h1>Моё Mini App</h1>
+        <!-- Верхняя панель -->
+        <header class="header">
+            <div>
+                <span class="header-label">Добро пожаловать</span>
+                <h1>Кофейня</h1>
+            </div>
 
-        <p>
-            Приложение успешно запущено внутри Telegram.
-        </p>
+            <button class="profile-button" id="profileButton">
+                <span>👤</span>
+            </button>
+        </header>
 
-        <button id="testButton">
-            Нажми меня
-        </button>
 
-        <p id="result"></p>
+        <!-- Приветственный блок -->
+        <section class="hero">
 
-    </main>
+            <div class="hero-content">
+                <span class="hero-label">СВЕЖЕОБЖАРЕННЫЙ КОФЕ</span>
 
+                <h2>
+                    Твой кофе уже<br>
+                    ждёт тебя
+                </h2>
+
+                <p>
+                    Закажи любимый напиток
+                    прямо в Telegram.
+                </p>
+
+                <button class="hero-button" id="heroButton">
+                    Посмотреть меню
+                </button>
+            </div>
+
+        </section>
+
+
+        <!-- Категории -->
+        <section class="categories-section">
+
+            <div class="section-header">
+                <h2>Категории</h2>
+            </div>
+
+            <div class="categories">
+
+                <button class="category active" data-category="coffee">
+                    <span class="category-icon">☕</span>
+                    <span>Кофе</span>
+                </button>
+
+                <button class="category" data-category="tea">
+                    <span class="category-icon">🍵</span>
+                    <span>Чай</span>
+                </button>
+
+                <button class="category" data-category="dessert">
+                    <span class="category-icon">🍰</span>
+                    <span>Десерты</span>
+                </button>
+
+                <button class="category" data-category="breakfast">
+                    <span class="category-icon">🥐</span>
+                    <span>Завтраки</span>
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- Популярное -->
+        <section class="products-section">
+
+            <div class="section-header">
+                <h2>Популярное</h2>
+
+                <button class="show-all" id="showAll">
+                    Все
+                </button>
+            </div>
+
+
+            <div class="products" id="products">
+
+                <!-- Товар 1 -->
+                <article
+                    class="product-card"
+                    data-category="coffee"
+                >
+
+                    <div class="product-image">
+                        <span>☕</span>
+                    </div>
+
+                    <div class="product-info">
+
+                        <h3>Капучино</h3>
+
+                        <p>
+                            Эспрессо, молоко,
+                            нежная пенка
+                        </p>
+
+                        <div class="product-bottom">
+
+                            <strong>220 ₽</strong>
+
+                            <button
+                                class="add-button"
+                                data-product="Капучино"
+                                data-price="220"
+                            >
+                                +
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <!-- Товар 2 -->
+                <article
+                    class="product-card"
+                    data-category="coffee"
+                >
+
+                    <div class="product-image">
+                        <span>☕</span>
+                    </div>
+
+                    <div class="product-info">
+
+                        <h3>Латте</h3>
+
+                        <p>
+                            Эспрессо и
+                            горячее молоко
+                        </p>
+
+                        <div class="product-bottom">
+
+                            <strong>240 ₽</strong>
+
+                            <button
+                                class="add-button"
+                                data-product="Латте"
+                                data-price="240"
+                            >
+                                +
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <!-- Товар 3 -->
+                <article
+                    class="product-card"
+                    data-category="dessert"
+                >
+
+                    <div class="product-image">
+                        <span>🍰</span>
+                    </div>
+
+                    <div class="product-info">
+
+                        <h3>Чизкейк</h3>
+
+                        <p>
+                            Нежный сливочный
+                            десерт
+                        </p>
+
+                        <div class="product-bottom">
+
+                            <strong>280 ₽</strong>
+
+                            <button
+                                class="add-button"
+                                data-product="Чизкейк"
+                                data-price="280"
+                            >
+                                +
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <!-- Товар 4 -->
+                <article
+                    class="product-card"
+                    data-category="breakfast"
+                >
+
+                    <div class="product-image">
+                        <span>🥐</span>
+                    </div>
+
+                    <div class="product-info">
+
+                        <h3>Круассан</h3>
+
+                        <p>
+                            Свежая выпечка
+                            с маслом
+                        </p>
+
+                        <div class="product-bottom">
+
+                            <strong>190 ₽</strong>
+
+                            <button
+                                class="add-button"
+                                data-product="Круассан"
+                                data-price="190"
+                            >
+                                +
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- Нижняя навигация -->
+        <nav class="bottom-nav">
+
+            <button class="nav-item active">
+
+                <span class="nav-icon">⌂</span>
+
+                <span>Главная</span>
+
+            </button>
+
+
+            <button
+                class="nav-item"
+                id="cartNav"
+            >
+
+                <span class="nav-icon">🛒</span>
+
+                <span>Корзина</span>
+
+                <span
+                    class="cart-badge"
+                    id="cartBadge"
+                >
+                    0
+                </span>
+
+            </button>
+
+
+            <button
+                class="nav-item"
+                id="profileNav"
+            >
+
+                <span class="nav-icon">👤</span>
+
+                <span>Профиль</span>
+
+            </button>
+
+        </nav>
+
+    </div>
+
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="script.js"></script>
 
 </body>
 </html>
+```
