@@ -1,13 +1,8 @@
-// ========================================
-// TELEGRAM MINI APP
-// ========================================
-
 const tg = window.Telegram?.WebApp;
 
-
-// ========================================
-// ИНИЦИАЛИЗАЦИЯ TELEGRAM
-// ========================================
+// ==============================
+// TELEGRAM
+// ==============================
 
 if (tg) {
     tg.ready();
@@ -20,181 +15,95 @@ if (tg) {
     if (tg.setBackgroundColor) {
         tg.setBackgroundColor("#f5f7f4");
     }
-
-    if (tg.enableClosingConfirmation) {
-        tg.enableClosingConfirmation();
-    }
 }
 
 
-// ========================================
-// СТРАНИЦЫ
-// ========================================
+// ==============================
+// ELEMENTS
+// ==============================
 
 const homePage = document.getElementById("homePage");
 const orderPage = document.getElementById("orderPage");
 const successPage = document.getElementById("successPage");
 
-
-// ========================================
-// НАВИГАЦИЯ
-// ========================================
+const startOrderButton = document.getElementById("startOrderButton");
+const submitOrderButton = document.getElementById("submitOrderButton");
+const backHomeButton = document.getElementById("backHomeButton");
 
 const homeNav = document.getElementById("homeNav");
 const orderNav = document.getElementById("orderNav");
 const profileNav = document.getElementById("profileNav");
 
-const startOrderButton =
-    document.getElementById("startOrderButton");
+const profileModal = document.getElementById("profileModal");
+const closeProfileButton = document.getElementById("closeProfileButton");
+const profileText = document.getElementById("profileText");
 
-const orderBackButton =
-    document.getElementById("orderBackButton");
+const areaInput = document.getElementById("areaInput");
+const windowsOption = document.getElementById("windowsOption");
+const fridgeOption = document.getElementById("fridgeOption");
+const ovenOption = document.getElementById("ovenOption");
 
-const backHomeButton =
-    document.getElementById("backHomeButton");
+const dateInput = document.getElementById("dateInput");
+const timeInput = document.getElementById("timeInput");
+const addressInput = document.getElementById("addressInput");
+const nameInput = document.getElementById("nameInput");
+const phoneInput = document.getElementById("phoneInput");
 
+const totalPrice = document.getElementById("totalPrice");
 
-// ========================================
-// ПРОФИЛЬ
-// ========================================
-
-const profileButton =
-    document.getElementById("profileButton");
-
-const profileModal =
-    document.getElementById("profileModal");
-
-const closeProfileButton =
-    document.getElementById("closeProfileButton");
-
-const profileText =
-    document.getElementById("profileText");
+const summaryService = document.getElementById("summaryService");
+const summaryDate = document.getElementById("summaryDate");
+const summaryTime = document.getElementById("summaryTime");
+const summaryPrice = document.getElementById("summaryPrice");
 
 
-// ========================================
-// ФОРМА
-// ========================================
-
-const serviceOptions =
-    document.querySelectorAll(".service-option");
-
-const serviceCards =
-    document.querySelectorAll(".service-card");
-
-const areaInput =
-    document.getElementById("areaInput");
-
-const windowsOption =
-    document.getElementById("windowsOption");
-
-const fridgeOption =
-    document.getElementById("fridgeOption");
-
-const ovenOption =
-    document.getElementById("ovenOption");
-
-const dateInput =
-    document.getElementById("dateInput");
-
-const timeInput =
-    document.getElementById("timeInput");
-
-const addressInput =
-    document.getElementById("addressInput");
-
-const nameInput =
-    document.getElementById("nameInput");
-
-const phoneInput =
-    document.getElementById("phoneInput");
-
-const totalPrice =
-    document.getElementById("totalPrice");
-
-const submitOrderButton =
-    document.getElementById("submitOrderButton");
-
-
-// ========================================
-// ИТОГОВЫЕ ДАННЫЕ
-// ========================================
-
-const summaryService =
-    document.getElementById("summaryService");
-
-const summaryDate =
-    document.getElementById("summaryDate");
-
-const summaryTime =
-    document.getElementById("summaryTime");
-
-const summaryPrice =
-    document.getElementById("summaryPrice");
-
-
-// ========================================
-// СОСТОЯНИЕ ПРИЛОЖЕНИЯ
-// ========================================
-
-let selectedService = "general";
-
-
-// ========================================
-// ЦЕНЫ
-// ========================================
+// ==============================
+// DATA
+// ==============================
 
 const servicePrices = {
-
     maintenance: 1500,
-
     general: 2500,
-
     windows: 800,
-
     renovation: 4000
-
 };
-
 
 const serviceNames = {
-
     maintenance: "Поддерживающая уборка",
-
     general: "Генеральная уборка",
-
     windows: "Мытьё окон",
-
     renovation: "Уборка после ремонта"
-
 };
-
-
-// ========================================
-// ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ
-// ========================================
 
 const additionalPrices = {
-
     windows: 800,
-
     fridge: 500,
-
     oven: 400
-
 };
 
+let selectedService = "maintenance";
 
-// ========================================
-// ПЕРЕКЛЮЧЕНИЕ СТРАНИЦ
-// ========================================
+
+// ==============================
+// PAGE SWITCHING
+// ==============================
 
 function showPage(page) {
+    homePage.classList.remove("active");
+    orderPage.classList.remove("active");
+    successPage.classList.remove("active");
 
-    homePage.hidden = true;
-    orderPage.hidden = true;
-    successPage.hidden = true;
+    if (page === "home") {
+        homePage.classList.add("active");
+    }
 
-    page.hidden = false;
+    if (page === "order") {
+        orderPage.classList.add("active");
+    }
+
+    if (page === "success") {
+        successPage.classList.add("active");
+    }
 
     window.scrollTo({
         top: 0,
@@ -203,900 +112,347 @@ function showPage(page) {
 }
 
 
-// ========================================
-// АКТИВНАЯ НИЖНЯЯ КНОПКА
-// ========================================
+// ==============================
+// HOME
+// ==============================
 
-function setActiveNav(button) {
+startOrderButton.addEventListener("click", function () {
+    showPage("order");
+    updatePrice();
+});
 
-    document
-        .querySelectorAll(".nav-item")
-        .forEach(item => {
-
-            item.classList.remove("active");
-
-        });
-
-    if (button) {
-        button.classList.add("active");
-    }
-}
-
-
-// ========================================
-// ОТКРЫТЬ ГЛАВНУЮ
-// ========================================
-
-function openHome() {
-
-    showPage(homePage);
-
-    setActiveNav(homeNav);
-
-}
-
-
-// ========================================
-// ОТКРЫТЬ ЗАКАЗ
-// ========================================
-
-function openOrder() {
-
-    showPage(orderPage);
-
-    setActiveNav(orderNav);
-
-    calculatePrice();
-
-}
-
-
-// ========================================
-// КНОПКА "РАССЧИТАТЬ СТОИМОСТЬ"
-// ========================================
-
-startOrderButton.addEventListener(
-    "click",
-    () => {
-
-        openOrder();
-
-        haptic("light");
-
-    }
-);
-
-
-// ========================================
-// НИЖНЯЯ НАВИГАЦИЯ
-// ========================================
-
-homeNav.addEventListener(
-    "click",
-    () => {
-
-        openHome();
-
-        haptic("light");
-
-    }
-);
-
-
-orderNav.addEventListener(
-    "click",
-    () => {
-
-        openOrder();
-
-        haptic("light");
-
-    }
-);
-
-
-// ========================================
-// НАЗАД ИЗ ЗАКАЗА
-// ========================================
-
-orderBackButton.addEventListener(
-    "click",
-    () => {
-
-        openHome();
-
-        haptic("light");
-
-    }
-);
-
-
-// ========================================
-// КАРТОЧКИ УСЛУГ НА ГЛАВНОЙ
-// ========================================
-
-serviceCards.forEach(card => {
-
-    card.addEventListener(
-        "click",
-        () => {
-
-            const service =
-                card.dataset.service;
-
-            selectService(service);
-
-            openOrder();
-
-            haptic("light");
-
-        }
-    );
-
+homeNav.addEventListener("click", function () {
+    showPage("home");
 });
 
 
-// ========================================
-// ВЫБОР УСЛУГИ
-// ========================================
+// ==============================
+// ORDER NAVIGATION
+// ==============================
 
-serviceOptions.forEach(option => {
-
-    option.addEventListener(
-        "click",
-        () => {
-
-            const service =
-                option.dataset.service;
-
-            selectService(service);
-
-            haptic("selection");
-
-        }
-    );
-
+orderNav.addEventListener("click", function () {
+    showPage("order");
+    updatePrice();
 });
 
 
-function selectService(service) {
+// ==============================
+// SERVICE CARDS ON HOME
+// ==============================
 
-    selectedService = service;
+document.querySelectorAll(".service-card").forEach(function (card) {
+    card.addEventListener("click", function () {
 
-    serviceOptions.forEach(option => {
+        const service = card.dataset.service;
 
-        option.classList.remove("selected");
-
-    });
-
-    const selectedOption =
-        document.querySelector(
-            `.service-option[data-service="${service}"]`
-        );
-
-    if (selectedOption) {
-
-        selectedOption.classList.add(
-            "selected"
-        );
-
-    }
-
-    calculatePrice();
-
-}
-
-
-// ========================================
-// РАСЧЁТ СТОИМОСТИ
-// ========================================
-
-function calculatePrice() {
-
-    let price =
-        servicePrices[selectedService] || 0;
-
-
-    // ------------------------------------
-    // Площадь
-    // ------------------------------------
-
-    let area =
-        Number(areaInput.value);
-
-    if (!area || area < 1) {
-        area = 1;
-    }
-
-
-    /*
-        Для уборки помещения увеличиваем
-        стоимость за площадь.
-
-        Первые 50 м² входят в базовую цену.
-        Каждые дополнительные 10 м²
-        добавляют 100 ₽.
-    */
-
-    if (
-        selectedService === "maintenance" ||
-        selectedService === "general" ||
-        selectedService === "renovation"
-    ) {
-
-        if (area > 50) {
-
-            const extraArea =
-                area - 50;
-
-            const extraBlocks =
-                Math.ceil(extraArea / 10);
-
-            price +=
-                extraBlocks * 100;
-
-        }
-
-    }
-
-
-    // ------------------------------------
-    // Дополнительные услуги
-    // ------------------------------------
-
-    if (
-        windowsOption &&
-        windowsOption.checked
-    ) {
-
-        price += additionalPrices.windows;
-
-    }
-
-
-    if (
-        fridgeOption &&
-        fridgeOption.checked
-    ) {
-
-        price += additionalPrices.fridge;
-
-    }
-
-
-    if (
-        ovenOption &&
-        ovenOption.checked
-    ) {
-
-        price += additionalPrices.oven;
-
-    }
-
-
-    // ------------------------------------
-    // Вывод
-    // ------------------------------------
-
-    totalPrice.textContent =
-        formatPrice(price);
-
-
-    return price;
-
-}
-
-
-// ========================================
-// СЛУШАТЕЛИ ФОРМЫ
-// ========================================
-
-areaInput.addEventListener(
-    "input",
-    calculatePrice
-);
-
-
-windowsOption.addEventListener(
-    "change",
-    () => {
-
-        calculatePrice();
-
-        haptic("selection");
-
-    }
-);
-
-
-fridgeOption.addEventListener(
-    "change",
-    () => {
-
-        calculatePrice();
-
-        haptic("selection");
-
-    }
-);
-
-
-ovenOption.addEventListener(
-    "change",
-    () => {
-
-        calculatePrice();
-
-        haptic("selection");
-
-    }
-);
-
-
-// ========================================
-// ФОРМАТ ЦЕНЫ
-// ========================================
-
-function formatPrice(price) {
-
-    return (
-        Math.round(price)
-            .toLocaleString("ru-RU")
-        + " ₽"
-    );
-
-}
-
-
-// ========================================
-// ДАТА
-// ========================================
-
-function setMinDate() {
-
-    const today =
-        new Date();
-
-    const year =
-        today.getFullYear();
-
-    const month =
-        String(
-            today.getMonth() + 1
-        ).padStart(2, "0");
-
-    const day =
-        String(
-            today.getDate()
-        ).padStart(2, "0");
-
-    const date =
-        `${year}-${month}-${day}`;
-
-    dateInput.min = date;
-
-    if (!dateInput.value) {
-        dateInput.value = date;
-    }
-
-}
-
-
-setMinDate();
-
-
-// ========================================
-// ПРОВЕРКА ВРЕМЕНИ
-// ========================================
-
-timeInput.addEventListener(
-    "change",
-    () => {
-
-        if (!timeInput.value) {
+        if (!service) {
             return;
         }
 
-        const [hours, minutes] =
-            timeInput.value
-                .split(":")
-                .map(Number);
+        selectedService = service;
 
-        /*
-            Работаем условно с 08:00 до 21:00.
-        */
+        showPage("order");
 
-        const totalMinutes =
-            hours * 60 + minutes;
+        selectService(service);
 
-        const minMinutes =
-            8 * 60;
+        updatePrice();
+    });
+});
 
-        const maxMinutes =
-            21 * 60;
 
-        if (
-            totalMinutes < minMinutes ||
-            totalMinutes > maxMinutes
-        ) {
+// ==============================
+// SERVICE OPTIONS
+// ==============================
 
-            showAlert(
-                "Пожалуйста, выберите время с 08:00 до 21:00."
-            );
+document.querySelectorAll(".service-option").forEach(function (option) {
 
-            timeInput.value = "";
+    option.addEventListener("click", function () {
 
+        const service = option.dataset.service;
+
+        if (!service) {
+            return;
         }
 
-    }
-);
+        selectedService = service;
+
+        selectService(service);
+
+        updatePrice();
+    });
+
+});
 
 
-// ========================================
-// ПРОФИЛЬ
-// ========================================
+// ==============================
+// SELECT SERVICE
+// ==============================
 
-profileButton.addEventListener(
-    "click",
-    openProfile
-);
+function selectService(service) {
+
+    document.querySelectorAll(".service-option").forEach(function (option) {
+
+        option.classList.remove("selected");
+
+        if (option.dataset.service === service) {
+            option.classList.add("selected");
+        }
+
+    });
+
+}
 
 
-profileNav.addEventListener(
-    "click",
-    openProfile
-);
+// ==============================
+// PRICE
+// ==============================
 
+function calculatePrice() {
 
-function openProfile() {
+    let price = servicePrices[selectedService] || 0;
+
+    const area = Number(areaInput.value);
 
     if (
-        tg &&
-        tg.initDataUnsafe &&
-        tg.initDataUnsafe.user
+        selectedService !== "windows" &&
+        selectedService !== "renovation" &&
+        area > 50
     ) {
+        const extraArea = area - 50;
+        const extraBlocks = Math.ceil(extraArea / 10);
 
-        const user =
-            tg.initDataUnsafe.user;
+        price += extraBlocks * 100;
+    }
 
-        let name =
-            user.first_name ||
-            "Пользователь";
+    if (windowsOption.checked) {
+        price += additionalPrices.windows;
+    }
 
-        if (user.last_name) {
+    if (fridgeOption.checked) {
+        price += additionalPrices.fridge;
+    }
 
-            name +=
-                ` ${user.last_name}`;
+    if (ovenOption.checked) {
+        price += additionalPrices.oven;
+    }
 
+    return price;
+}
+
+
+function updatePrice() {
+
+    const price = calculatePrice();
+
+    totalPrice.textContent = price.toLocaleString("ru-RU") + " ₽";
+
+}
+
+
+// ==============================
+// INPUTS
+// ==============================
+
+areaInput.addEventListener("input", updatePrice);
+
+windowsOption.addEventListener("change", updatePrice);
+fridgeOption.addEventListener("change", updatePrice);
+ovenOption.addEventListener("change", updatePrice);
+
+
+// ==============================
+// DATE
+// ==============================
+
+const today = new Date();
+
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, "0");
+const day = String(today.getDate()).padStart(2, "0");
+
+dateInput.min = `${year}-${month}-${day}`;
+
+
+// ==============================
+// TIME
+// ==============================
+
+timeInput.min = "08:00";
+timeInput.max = "21:00";
+
+
+// ==============================
+// PROFILE
+// ==============================
+
+profileNav.addEventListener("click", function () {
+
+    if (!profileModal) {
+        return;
+    }
+
+    profileModal.classList.add("active");
+
+    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+
+        const user = tg.initDataUnsafe.user;
+
+        let text = "";
+
+        if (user.first_name) {
+            text += user.first_name;
         }
 
-        profileText.textContent =
-            `Вы вошли как ${name}.`;
+        if (user.last_name) {
+            text += " " + user.last_name;
+        }
+
+        if (user.username) {
+            text += "\n@" + user.username;
+        }
+
+        profileText.textContent = text || "Пользователь Telegram";
 
     } else {
 
-        profileText.textContent =
-            "Приложение открыто в браузере.";
+        profileText.textContent = "Профиль доступен внутри Telegram.";
 
     }
 
-    profileModal.hidden = false;
-
-    haptic("light");
-
-}
+});
 
 
-// ========================================
-// ЗАКРЫТЬ ПРОФИЛЬ
-// ========================================
+closeProfileButton.addEventListener("click", function () {
 
-closeProfileButton.addEventListener(
-    "click",
-    closeProfile
-);
+    profileModal.classList.remove("active");
+
+});
 
 
-document
-    .querySelector(".modal-overlay")
-    .addEventListener(
-        "click",
-        closeProfile
-    );
+// Закрытие модального окна при клике на фон
 
+profileModal.addEventListener("click", function (event) {
 
-function closeProfile() {
-
-    profileModal.hidden = true;
-
-}
-
-
-// ========================================
-// ОФОРМЛЕНИЕ ЗАЯВКИ
-// ========================================
-
-submitOrderButton.addEventListener(
-    "click",
-    submitOrder
-);
-
-
-function submitOrder() {
-
-    // ------------------------------------
-    // Получаем данные
-    // ------------------------------------
-
-    const area =
-        Number(areaInput.value);
-
-    const address =
-        addressInput.value.trim();
-
-    const name =
-        nameInput.value.trim();
-
-    const phone =
-        phoneInput.value.trim();
-
-    const date =
-        dateInput.value;
-
-    const time =
-        timeInput.value;
-
-
-    // ------------------------------------
-    // Проверка услуги
-    // ------------------------------------
-
-    if (!selectedService) {
-
-        showAlert(
-            "Выберите тип уборки."
-        );
-
-        return;
-
+    if (event.target === profileModal) {
+        profileModal.classList.remove("active");
     }
 
+});
 
-    // ------------------------------------
-    // Проверка площади
-    // ------------------------------------
 
-    if (!area || area < 1) {
+// ==============================
+// SUBMIT ORDER
+// ==============================
 
-        showAlert(
-            "Укажите площадь помещения."
-        );
+submitOrderButton.addEventListener("click", function () {
 
+    const area = areaInput.value.trim();
+    const date = dateInput.value;
+    const time = timeInput.value;
+    const address = addressInput.value.trim();
+    const name = nameInput.value.trim();
+    const phone = phoneInput.value.trim();
+
+    if (!area) {
+        alert("Укажи площадь помещения.");
         areaInput.focus();
-
         return;
-
     }
 
-
-    // ------------------------------------
-    // Проверка даты
-    // ------------------------------------
+    if (Number(area) <= 0) {
+        alert("Площадь должна быть больше 0.");
+        areaInput.focus();
+        return;
+    }
 
     if (!date) {
-
-        showAlert(
-            "Выберите дату уборки."
-        );
-
+        alert("Выбери дату.");
         dateInput.focus();
-
         return;
-
     }
-
-
-    // ------------------------------------
-    // Проверка времени
-    // ------------------------------------
 
     if (!time) {
-
-        showAlert(
-            "Выберите удобное время."
-        );
-
+        alert("Выбери время.");
         timeInput.focus();
-
         return;
-
     }
-
-
-    // ------------------------------------
-    // Проверка адреса
-    // ------------------------------------
 
     if (!address) {
-
-        showAlert(
-            "Укажите адрес."
-        );
-
+        alert("Укажи адрес.");
         addressInput.focus();
-
         return;
-
     }
-
-
-    // ------------------------------------
-    // Проверка имени
-    // ------------------------------------
 
     if (!name) {
-
-        showAlert(
-            "Укажите ваше имя."
-        );
-
+        alert("Укажи имя.");
         nameInput.focus();
-
         return;
-
     }
-
-
-    // ------------------------------------
-    // Проверка телефона
-    // ------------------------------------
 
     if (!phone) {
-
-        showAlert(
-            "Укажите номер телефона."
-        );
-
+        alert("Укажи номер телефона.");
         phoneInput.focus();
-
         return;
-
     }
 
-
-    // ------------------------------------
-    // Расчёт
-    // ------------------------------------
-
-    const price =
-        calculatePrice();
-
-
-    // ------------------------------------
-    // Заполняем экран результата
-    // ------------------------------------
-
-    summaryService.textContent =
-        serviceNames[selectedService];
-
-    summaryDate.textContent =
-        formatDate(date);
-
-    summaryTime.textContent =
-        time;
-
-    summaryPrice.textContent =
-        formatPrice(price);
-
-
-    // ------------------------------------
-    // Формируем данные заявки
-    // ------------------------------------
+    const price = calculatePrice();
 
     const orderData = {
-
-        service:
-            selectedService,
-
-        serviceName:
-            serviceNames[selectedService],
-
-        area:
-            area,
-
-        windows:
-            windowsOption.checked,
-
-        fridge:
-            fridgeOption.checked,
-
-        oven:
-            ovenOption.checked,
-
-        date:
-            date,
-
-        time:
-            time,
-
-        address:
-            address,
-
-        name:
-            name,
-
-        phone:
-            phone,
-
-        price:
-            price
-
+        service: selectedService,
+        serviceName: serviceNames[selectedService],
+        area: Number(area),
+        windows: windowsOption.checked,
+        fridge: fridgeOption.checked,
+        oven: ovenOption.checked,
+        date: date,
+        time: time,
+        address: address,
+        name: name,
+        phone: phone,
+        price: price
     };
 
-
-    // ------------------------------------
-    // Сохраняем локально
-    // ------------------------------------
-
+    // Сохраняем последнюю заявку локально
     localStorage.setItem(
         "cleaningLastOrder",
         JSON.stringify(orderData)
     );
 
-
-    // ------------------------------------
-    // Telegram
-    // ------------------------------------
-
-    /*
-        Пока здесь только подготовка данных.
-
-        На следующем этапе подключим
-        отправку заявки непосредственно
-        в Telegram-бот.
-    */
-
-    console.log(
-        "Новая заявка:",
-        orderData
-    );
-
-
-    // ------------------------------------
     // Показываем результат
-    // ------------------------------------
+    summaryService.textContent = orderData.serviceName;
+    summaryDate.textContent = orderData.date;
+    summaryTime.textContent = orderData.time;
+    summaryPrice.textContent =
+        orderData.price.toLocaleString("ru-RU") + " ₽";
 
-    showPage(successPage);
+    showPage("success");
 
-    setActiveNav(null);
-
-    haptic("success");
-
-}
-
-
-// ========================================
-// ФОРМАТ ДАТЫ
-// ========================================
-
-function formatDate(date) {
-
-    if (!date) {
-        return "—";
+    if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.notificationOccurred("success");
     }
 
-    const parts =
-        date.split("-");
+    console.log("Заявка:", orderData);
 
-    if (parts.length !== 3) {
-        return date;
-    }
-
-    return (
-        `${parts[2]}.${parts[1]}.${parts[0]}`
-    );
-
-}
+});
 
 
-// ========================================
-// ВОЗВРАТ НА ГЛАВНУЮ
-// ========================================
+// ==============================
+// BACK HOME
+// ==============================
 
-backHomeButton.addEventListener(
-    "click",
-    () => {
+backHomeButton.addEventListener("click", function () {
 
-        openHome();
+    showPage("home");
 
-        haptic("light");
-
-    }
-);
+});
 
 
-// ========================================
-// УВЕДОМЛЕНИЯ
-// ========================================
+// ==============================
+// INITIAL STATE
+// ==============================
 
-function showAlert(text) {
+selectService(selectedService);
 
-    if (
-        tg &&
-        tg.showAlert
-    ) {
+updatePrice();
 
-        tg.showAlert(text);
-
-    } else {
-
-        alert(text);
-
-    }
-
-}
-
-
-// ========================================
-// HAPTIC FEEDBACK
-// ========================================
-
-function haptic(type) {
-
-    if (
-        !tg ||
-        !tg.HapticFeedback
-    ) {
-
-        return;
-
-    }
-
-
-    if (type === "success") {
-
-        tg.HapticFeedback.notificationOccurred(
-            "success"
-        );
-
-        return;
-
-    }
-
-
-    if (type === "error") {
-
-        tg.HapticFeedback.notificationOccurred(
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    if (type === "selection") {
-
-        tg.HapticFeedback.selectionChanged();
-
-        return;
-
-    }
-
-
-    tg.HapticFeedback.impactOccurred(
-        "light"
-    );
-
-}
-
-
-// ========================================
-// НАЧАЛЬНОЕ СОСТОЯНИЕ
-// ========================================
-
-selectService("general");
-
-calculatePrice();
-
-openHome();
+showPage("home");
