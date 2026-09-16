@@ -1,0 +1,48 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    color: #111;
+}
+
+.app {
+    min-height: 100vh;
+    padding: 40px 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 15px;
+}
+
+p {
+    margin-bottom: 25px;
+}
+
+button {
+    border: none;
+    border-radius: 12px;
+
+    padding: 14px 25px;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+#result {
+    margin-top: 20px;
+    margin-bottom: 0;
+}
