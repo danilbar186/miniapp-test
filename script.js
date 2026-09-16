@@ -24,9 +24,15 @@ document.addEventListener("DOMContentLoaded", function () {
     // ELEMENTS
     // ==========================================
 
-    const homePage = document.getElementById("homePage");
-    const orderPage = document.getElementById("orderPage");
-    const successPage = document.getElementById("successPage");
+    const homePage =
+        document.getElementById("homePage");
+
+    const orderPage =
+        document.getElementById("orderPage");
+
+    const successPage =
+        document.getElementById("successPage");
+
 
     const startOrderButton =
         document.getElementById("startOrderButton");
@@ -37,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const backHomeButton =
         document.getElementById("backHomeButton");
 
+
     const homeNav =
         document.getElementById("homeNav");
 
@@ -45,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const profileNav =
         document.getElementById("profileNav");
+
 
     const profileButton =
         document.getElementById("profileButton");
@@ -58,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const profileText =
         document.getElementById("profileText");
 
+
     const areaInput =
         document.getElementById("areaInput");
 
@@ -69,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const ovenOption =
         document.getElementById("ovenOption");
+
 
     const dateInput =
         document.getElementById("dateInput");
@@ -85,8 +95,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const phoneInput =
         document.getElementById("phoneInput");
 
+
     const totalPrice =
         document.getElementById("totalPrice");
+
 
     const summaryService =
         document.getElementById("summaryService");
@@ -106,26 +118,48 @@ document.addEventListener("DOMContentLoaded", function () {
     // ==========================================
 
     const servicePrices = {
+
         maintenance: 1500,
+
         general: 2500,
+
         windows: 800,
+
         renovation: 4000
+
     };
+
 
     const serviceNames = {
-        maintenance: "Поддерживающая уборка",
-        general: "Генеральная уборка",
-        windows: "Мытьё окон",
-        renovation: "Уборка после ремонта"
+
+        maintenance:
+            "Поддерживающая уборка",
+
+        general:
+            "Генеральная уборка",
+
+        windows:
+            "Мытьё окон",
+
+        renovation:
+            "Уборка после ремонта"
+
     };
+
 
     const additionalPrices = {
+
         windows: 800,
+
         fridge: 500,
+
         oven: 400
+
     };
 
-    let selectedService = "maintenance";
+
+    let selectedService =
+        "maintenance";
 
 
     // ==========================================
@@ -135,22 +169,35 @@ document.addEventListener("DOMContentLoaded", function () {
     function showPage(pageName) {
 
         homePage.hidden = true;
+
         orderPage.hidden = true;
+
         successPage.hidden = true;
 
+
         if (pageName === "home") {
+
             homePage.hidden = false;
+
         }
+
 
         if (pageName === "order") {
+
             orderPage.hidden = false;
+
         }
+
 
         if (pageName === "success") {
+
             successPage.hidden = false;
+
         }
 
+
         window.scrollTo(0, 0);
+
     }
 
 
@@ -162,71 +209,114 @@ document.addEventListener("DOMContentLoaded", function () {
 
         selectedService = service;
 
+
         document
             .querySelectorAll(".service-option")
             .forEach(function (option) {
 
-                option.classList.remove("selected");
+                option.classList.remove(
+                    "selected"
+                );
 
-                if (option.dataset.service === service) {
-                    option.classList.add("selected");
+
+                if (
+                    option.dataset.service ===
+                    service
+                ) {
+
+                    option.classList.add(
+                        "selected"
+                    );
+
                 }
 
             });
+
     }
 
 
     // ==========================================
-    // PRICE CALCULATION
+    // PRICE
     // ==========================================
 
     function calculatePrice() {
 
-        let price = servicePrices[selectedService] || 0;
+        let price =
+            servicePrices[selectedService] || 0;
+
 
         const area =
             Number(areaInput.value) || 0;
 
 
-        // Доплата за площадь
         if (
             selectedService !== "windows" &&
             selectedService !== "renovation" &&
             area > 50
         ) {
 
-            const extraArea = area - 50;
+            const extraArea =
+                area - 50;
+
 
             const extraBlocks =
-                Math.ceil(extraArea / 10);
+                Math.ceil(
+                    extraArea / 10
+                );
 
-            price += extraBlocks * 100;
+
+            price +=
+                extraBlocks * 100;
+
         }
 
 
-        // Дополнительные услуги
-        if (windowsOption.checked) {
-            price += additionalPrices.windows;
+        if (
+            windowsOption.checked
+        ) {
+
+            price +=
+                additionalPrices.windows;
+
         }
 
-        if (fridgeOption.checked) {
-            price += additionalPrices.fridge;
+
+        if (
+            fridgeOption.checked
+        ) {
+
+            price +=
+                additionalPrices.fridge;
+
         }
 
-        if (ovenOption.checked) {
-            price += additionalPrices.oven;
+
+        if (
+            ovenOption.checked
+        ) {
+
+            price +=
+                additionalPrices.oven;
+
         }
+
 
         return price;
+
     }
 
 
     function updatePrice() {
 
-        const price = calculatePrice();
+        const price =
+            calculatePrice();
+
 
         totalPrice.textContent =
-            price.toLocaleString("ru-RU") + " ₽";
+            price.toLocaleString(
+                "ru-RU"
+            ) + " ₽";
+
     }
 
 
@@ -261,13 +351,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     const service =
                         card.dataset.service;
 
+
                     if (!service) {
+
                         return;
+
                     }
 
-                    selectService(service);
+
+                    selectService(
+                        service
+                    );
+
 
                     showPage("order");
+
 
                     updatePrice();
 
@@ -292,11 +390,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     const service =
                         option.dataset.service;
 
+
                     if (!service) {
+
                         return;
+
                     }
 
-                    selectService(service);
+
+                    selectService(
+                        service
+                    );
+
 
                     updatePrice();
 
@@ -307,7 +412,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // ==========================================
-    // BOTTOM NAVIGATION
+    // NAVIGATION
     // ==========================================
 
     homeNav.addEventListener(
@@ -343,7 +448,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // ==========================================
-    // PROFILE BUTTON
+    // PROFILE
     // ==========================================
 
     if (profileButton) {
@@ -363,11 +468,19 @@ document.addEventListener("DOMContentLoaded", function () {
     function openProfile() {
 
         if (!profileModal) {
+
             return;
+
         }
 
-        profileModal.hidden = false;
-        profileModal.classList.add("active");
+
+        profileModal.hidden =
+            false;
+
+
+        profileModal.classList.add(
+            "active"
+        );
 
 
         if (
@@ -379,28 +492,43 @@ document.addEventListener("DOMContentLoaded", function () {
             const user =
                 tg.initDataUnsafe.user;
 
+
             let text = "";
 
+
             if (user.first_name) {
-                text += user.first_name;
+
+                text +=
+                    user.first_name;
+
             }
 
+
             if (user.last_name) {
+
                 text +=
                     " " +
                     user.last_name;
+
             }
 
+
             if (user.username) {
+
                 text +=
                     "\n@" +
                     user.username;
+
             }
 
-            profileText.textContent =
-                text || "Пользователь Telegram";
 
-        } else {
+            profileText.textContent =
+                text ||
+                "Пользователь Telegram";
+
+        }
+
+        else {
 
             profileText.textContent =
                 "Профиль доступен внутри Telegram.";
@@ -420,18 +548,15 @@ document.addEventListener("DOMContentLoaded", function () {
             "click",
             function () {
 
-                closeProfile();
+                profileModal.classList.remove(
+                    "active"
+                );
+
+                profileModal.hidden =
+                    true;
 
             }
         );
-
-    }
-
-
-    function closeProfile() {
-
-        profileModal.classList.remove("active");
-        profileModal.hidden = true;
 
     }
 
@@ -443,10 +568,16 @@ document.addEventListener("DOMContentLoaded", function () {
             function (event) {
 
                 if (
-                    event.target === profileModal
+                    event.target ===
+                    profileModal
                 ) {
 
-                    closeProfile();
+                    profileModal.classList.remove(
+                        "active"
+                    );
+
+                    profileModal.hidden =
+                        true;
 
                 }
 
@@ -462,41 +593,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     areaInput.addEventListener(
         "input",
-        function () {
-
-            updatePrice();
-
-        }
+        updatePrice
     );
 
 
     windowsOption.addEventListener(
         "change",
-        function () {
-
-            updatePrice();
-
-        }
+        updatePrice
     );
 
 
     fridgeOption.addEventListener(
         "change",
-        function () {
-
-            updatePrice();
-
-        }
+        updatePrice
     );
 
 
     ovenOption.addEventListener(
         "change",
-        function () {
-
-            updatePrice();
-
-        }
+        updatePrice
     );
 
 
@@ -504,20 +619,25 @@ document.addEventListener("DOMContentLoaded", function () {
     // DATE
     // ==========================================
 
-    const today = new Date();
+    const today =
+        new Date();
+
 
     const year =
         today.getFullYear();
+
 
     const month =
         String(
             today.getMonth() + 1
         ).padStart(2, "0");
 
+
     const day =
         String(
             today.getDate()
         ).padStart(2, "0");
+
 
     dateInput.min =
         `${year}-${month}-${day}`;
@@ -527,8 +647,11 @@ document.addEventListener("DOMContentLoaded", function () {
     // TIME
     // ==========================================
 
-    timeInput.min = "08:00";
-    timeInput.max = "21:00";
+    timeInput.min =
+        "08:00";
+
+    timeInput.max =
+        "21:00";
 
 
     // ==========================================
@@ -542,23 +665,31 @@ document.addEventListener("DOMContentLoaded", function () {
             const area =
                 areaInput.value.trim();
 
+
             const date =
                 dateInput.value;
+
 
             const time =
                 timeInput.value;
 
+
             const address =
                 addressInput.value.trim();
 
+
             const name =
                 nameInput.value.trim();
+
 
             const phone =
                 phoneInput.value.trim();
 
 
-            // Проверяем площадь
+            // ----------------------------------
+            // VALIDATION
+            // ----------------------------------
+
             if (!area) {
 
                 alert(
@@ -568,10 +699,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 areaInput.focus();
 
                 return;
+
             }
 
 
-            if (Number(area) <= 0) {
+            if (
+                Number(area) <= 0
+            ) {
 
                 alert(
                     "Площадь должна быть больше 0."
@@ -580,10 +714,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 areaInput.focus();
 
                 return;
+
             }
 
 
-            // Проверяем дату
             if (!date) {
 
                 alert(
@@ -593,10 +727,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 dateInput.focus();
 
                 return;
+
             }
 
 
-            // Проверяем время
             if (!time) {
 
                 alert(
@@ -606,10 +740,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 timeInput.focus();
 
                 return;
+
             }
 
 
-            // Проверяем адрес
             if (!address) {
 
                 alert(
@@ -619,10 +753,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 addressInput.focus();
 
                 return;
+
             }
 
 
-            // Проверяем имя
             if (!name) {
 
                 alert(
@@ -632,10 +766,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 nameInput.focus();
 
                 return;
+
             }
 
 
-            // Проверяем телефон
             if (!phone) {
 
                 alert(
@@ -645,22 +779,27 @@ document.addEventListener("DOMContentLoaded", function () {
                 phoneInput.focus();
 
                 return;
+
             }
 
 
-            // Рассчитываем цену
+            // ----------------------------------
+            // CREATE ORDER
+            // ----------------------------------
+
             const price =
                 calculatePrice();
 
 
-            // Формируем заявку
             const orderData = {
 
                 service:
                     selectedService,
 
                 serviceName:
-                    serviceNames[selectedService],
+                    serviceNames[
+                        selectedService
+                    ],
 
                 area:
                     Number(area),
@@ -695,33 +834,75 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
 
-            // Сохраняем заявку
+            // ----------------------------------
+            // LOCAL COPY
+            // ----------------------------------
+
             localStorage.setItem(
                 "cleaningLastOrder",
-                JSON.stringify(orderData)
+                JSON.stringify(
+                    orderData
+                )
             );
 
 
-            // Показываем результат
+            // ----------------------------------
+            // TELEGRAM
+            // ----------------------------------
+
+            if (
+                tg &&
+                typeof tg.sendData ===
+                    "function"
+            ) {
+
+                tg.sendData(
+                    JSON.stringify(
+                        orderData
+                    )
+                );
+
+            }
+
+            else {
+
+                console.log(
+                    "Telegram WebApp недоступен."
+                );
+
+            }
+
+
+            // ----------------------------------
+            // SUCCESS SCREEN
+            // ----------------------------------
+
             summaryService.textContent =
                 orderData.serviceName;
+
 
             summaryDate.textContent =
                 orderData.date;
 
+
             summaryTime.textContent =
                 orderData.time;
 
+
             summaryPrice.textContent =
                 orderData.price
-                    .toLocaleString("ru-RU") +
-                " ₽";
+                    .toLocaleString(
+                        "ru-RU"
+                    ) + " ₽";
 
 
             showPage("success");
 
 
-            // Вибрация Telegram
+            // ----------------------------------
+            // HAPTIC
+            // ----------------------------------
+
             if (
                 tg &&
                 tg.HapticFeedback
@@ -753,10 +934,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // ==========================================
-    // INITIAL STATE
+    // INITIALIZATION
     // ==========================================
 
-    selectService("maintenance");
+    selectService(
+        "maintenance"
+    );
 
     updatePrice();
 
