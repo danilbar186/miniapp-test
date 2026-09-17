@@ -1,71 +1,41 @@
 document.addEventListener("DOMContentLoaded", function () {
-
-    // ==========================================
-    // TELEGRAM
-    // ==========================================
+    /* ========================================
+       TELEGRAM
+    ======================================== */
 
     const tg = window.Telegram?.WebApp;
 
     if (tg) {
         tg.ready();
         tg.expand();
-
-        if (tg.setHeaderColor) {
-            tg.setHeaderColor("#f5f7f4");
-        }
-
-        if (tg.setBackgroundColor) {
-            tg.setBackgroundColor("#f5f7f4");
-        }
     }
 
 
-    // ==========================================
-    // ELEMENTS
-    // ==========================================
+    /* ========================================
+       ELEMENTS
+    ======================================== */
 
-    const homePage =
-        document.getElementById("homePage");
+    const homePage = document.getElementById("homePage");
+    const orderPage = document.getElementById("orderPage");
+    const successPage = document.getElementById("successPage");
 
-    const orderPage =
-        document.getElementById("orderPage");
+    const homeNav = document.getElementById("homeNav");
+    const orderNav = document.getElementById("orderNav");
+    const profileNav = document.getElementById("profileNav");
 
-    const successPage =
-        document.getElementById("successPage");
+    const profileButton = document.getElementById("profileButton");
+    const profileModal = document.getElementById("profileModal");
+    const closeProfileButton = document.getElementById("closeProfileButton");
+    const profileText = document.getElementById("profileText");
 
+    const themeButton = document.getElementById("themeButton");
+    const themeIcon = document.getElementById("themeIcon");
+    const themeColorMeta = document.getElementById("themeColorMeta");
 
-    const startOrderButton =
-        document.getElementById("startOrderButton");
+    const backHomeButton = document.getElementById("backHomeButton");
 
     const submitOrderButton =
         document.getElementById("submitOrderButton");
-
-    const backHomeButton =
-        document.getElementById("backHomeButton");
-
-
-    const homeNav =
-        document.getElementById("homeNav");
-
-    const orderNav =
-        document.getElementById("orderNav");
-
-    const profileNav =
-        document.getElementById("profileNav");
-
-
-    const profileButton =
-        document.getElementById("profileButton");
-
-    const profileModal =
-        document.getElementById("profileModal");
-
-    const closeProfileButton =
-        document.getElementById("closeProfileButton");
-
-    const profileText =
-        document.getElementById("profileText");
-
 
     const areaInput =
         document.getElementById("areaInput");
@@ -79,6 +49,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const ovenOption =
         document.getElementById("ovenOption");
 
+    const totalPrice =
+        document.getElementById("totalPrice");
 
     const dateInput =
         document.getElementById("dateInput");
@@ -95,11 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const phoneInput =
         document.getElementById("phoneInput");
 
-
-    const totalPrice =
-        document.getElementById("totalPrice");
-
-
     const summaryService =
         document.getElementById("summaryService");
 
@@ -112,837 +79,1108 @@ document.addEventListener("DOMContentLoaded", function () {
     const summaryPrice =
         document.getElementById("summaryPrice");
 
+    const serviceOptions =
+        document.querySelectorAll(".service-option");
 
-    // ==========================================
-    // DATA
-    // ==========================================
+    const serviceCards =
+        document.querySelectorAll(".service-card");
+
+
+    /* ========================================
+       SERVICES / PRICES
+    ======================================== */
 
     const servicePrices = {
-
         maintenance: 1500,
-
         general: 2500,
-
         windows: 800,
-
         renovation: 4000
-
     };
-
 
     const serviceNames = {
-
-        maintenance:
-            "Поддерживающая уборка",
-
-        general:
-            "Генеральная уборка",
-
-        windows:
-            "Мытьё окон",
-
-        renovation:
-            "Уборка после ремонта"
-
+        maintenance: "Поддерживающая уборка",
+        general: "Генеральная уборка",
+        windows: "Мытьё окон",
+        renovation: "Уборка после ремонта"
     };
-
 
     const additionalPrices = {
-
         windows: 800,
-
         fridge: 500,
-
         oven: 400
-
     };
 
-
-    let selectedService =
-        "maintenance";
+    let selectedService = "maintenance";
 
 
-    // ==========================================
-    // PAGE SWITCHING
-    // ==========================================
+    /* ========================================
+       THEME
+    ======================================== */
 
-    function showPage(pageName) {
-
-        homePage.hidden = true;
-
-        orderPage.hidden = true;
-
-        successPage.hidden = true;
+    const THEME_STORAGE_KEY = "cleaningTheme";
 
 
-        if (pageName === "home") {
+    function getPreferredTheme() {
+        const savedTheme =
+            localStorage.getItem(THEME_STORAGE_KEY);
 
-            homePage.hidden = false;
-
+        if (
+            savedTheme === "light" ||
+            savedTheme === "dark"
+        ) {
+            return savedTheme;
         }
 
-
-        if (pageName === "order") {
-
-            orderPage.hidden = false;
-
+        if (
+            tg &&
+            tg.colorScheme === "dark"
+        ) {
+            return "dark";
         }
 
-
-        if (pageName === "success") {
-
-            successPage.hidden = false;
-
+        if (
+            window.matchMedia &&
+            window.matchMedia(
+                "(prefers-color-scheme: dark)"
+            ).matches
+        ) {
+            return "dark";
         }
 
-
-        window.scrollTo(0, 0);
-
+        return "light";
     }
 
 
-    // ==========================================
-    // SERVICE SELECTION
-    // ==========================================
+    function updateTelegramTheme(theme) {
+        const isDark = theme === "dark";
+
+        const backgroundColor =
+            isDark
+                ? "#101512"
+                : "#f5f7f4";
+
+        if (themeColorMeta) {
+            themeColorMeta.setAttribute(
+                "content",
+                backgroundColor
+            );
+        }
+
+        if (tg) {
+            if (typeof tg.setHeaderColor === "function") {
+                tg.setHeaderColor(backgroundColor);
+            }
+
+            if (
+                typeof tg.setBackgroundColor === "function"
+            ) {
+                tg.setBackgroundColor(backgroundColor);
+            }
+        }
+    }
+
+
+    function updateThemeIcon(theme) {
+        if (!themeIcon) {
+            return;
+        }
+
+        if (theme === "dark") {
+            themeIcon.textContent = "☀";
+            themeButton.setAttribute(
+                "aria-label",
+                "Включить светлую тему"
+            );
+        } else {
+            themeIcon.textContent = "☾";
+            themeButton.setAttribute(
+                "aria-label",
+                "Включить тёмную тему"
+            );
+        }
+    }
+
+
+    function applyTheme(theme, save = true) {
+        if (
+            theme !== "light" &&
+            theme !== "dark"
+        ) {
+            theme = "light";
+        }
+
+        document.documentElement.dataset.theme =
+            theme;
+
+        updateThemeIcon(theme);
+        updateTelegramTheme(theme);
+
+        if (save) {
+            localStorage.setItem(
+                THEME_STORAGE_KEY,
+                theme
+            );
+        }
+    }
+
+
+    applyTheme(
+        getPreferredTheme(),
+        false
+    );
+
+
+    if (themeButton) {
+        themeButton.addEventListener(
+            "click",
+            function () {
+                const currentTheme =
+                    document.documentElement.dataset.theme ||
+                    "light";
+
+                const newTheme =
+                    currentTheme === "dark"
+                        ? "light"
+                        : "dark";
+
+                applyTheme(
+                    newTheme,
+                    true
+                );
+
+                if (
+                    tg &&
+                    typeof tg.HapticFeedback?.impactOccurred ===
+                        "function"
+                ) {
+                    tg.HapticFeedback.impactOccurred(
+                        "light"
+                    );
+                }
+            }
+        );
+    }
+
+
+    /* ========================================
+       PAGE SWITCHING
+    ======================================== */
+
+    const pages = [
+        homePage,
+        orderPage,
+        successPage
+    ];
+
+
+    function showPage(pageName) {
+        pages.forEach(function (page) {
+            if (!page) {
+                return;
+            }
+
+            page.hidden = true;
+            page.classList.remove("active");
+        });
+
+        let targetPage = null;
+
+        if (pageName === "home") {
+            targetPage = homePage;
+        }
+
+        if (pageName === "order") {
+            targetPage = orderPage;
+        }
+
+        if (pageName === "success") {
+            targetPage = successPage;
+        }
+
+        if (!targetPage) {
+            return;
+        }
+
+        targetPage.hidden = false;
+
+        void targetPage.offsetWidth;
+
+        targetPage.classList.add("active");
+
+        updateNavigation(pageName);
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+
+    function updateNavigation(pageName) {
+        if (homeNav) {
+            homeNav.classList.remove("active");
+        }
+
+        if (orderNav) {
+            orderNav.classList.remove("active");
+        }
+
+        if (profileNav) {
+            profileNav.classList.remove("active");
+        }
+
+        if (pageName === "home") {
+            if (homeNav) {
+                homeNav.classList.add("active");
+            }
+        }
+
+        if (pageName === "order") {
+            if (orderNav) {
+                orderNav.classList.add("active");
+            }
+        }
+    }
+
+
+    /* ========================================
+       HOME / ORDER NAVIGATION
+    ======================================== */
+
+    if (homeNav) {
+        homeNav.addEventListener(
+            "click",
+            function () {
+                showPage("home");
+            }
+        );
+    }
+
+
+    if (orderNav) {
+        orderNav.addEventListener(
+            "click",
+            function () {
+                showPage("order");
+            }
+        );
+    }
+
+
+    if (profileNav) {
+        profileNav.addEventListener(
+            "click",
+            function () {
+                openProfile();
+            }
+        );
+    }
+
+
+    /* ========================================
+       SERVICE CARDS
+    ======================================== */
+
+    serviceCards.forEach(function (card) {
+        card.addEventListener(
+            "click",
+            function () {
+                const service =
+                    card.dataset.service;
+
+                if (!service) {
+                    return;
+                }
+
+                selectService(service);
+
+                showPage("order");
+            }
+        );
+    });
+
+
+    /* ========================================
+       SERVICE OPTIONS
+    ======================================== */
+
+    serviceOptions.forEach(function (option) {
+        option.addEventListener(
+            "click",
+            function () {
+                const service =
+                    option.dataset.service;
+
+                if (!service) {
+                    return;
+                }
+
+                selectService(service);
+            }
+        );
+    });
+
 
     function selectService(service) {
+        if (
+            !Object.prototype.hasOwnProperty.call(
+                servicePrices,
+                service
+            )
+        ) {
+            return;
+        }
 
         selectedService = service;
 
-
-        document
-            .querySelectorAll(".service-option")
-            .forEach(function (option) {
-
+        serviceOptions.forEach(
+            function (option) {
                 option.classList.remove(
                     "selected"
                 );
-
 
                 if (
                     option.dataset.service ===
                     service
                 ) {
-
                     option.classList.add(
                         "selected"
                     );
-
                 }
+            }
+        );
 
-            });
-
+        updatePrice();
     }
 
 
-    // ==========================================
-    // PRICE
-    // ==========================================
+    /* ========================================
+       PRICE CALCULATION
+    ======================================== */
 
     function calculatePrice() {
-
         let price =
             servicePrices[selectedService] || 0;
 
-
         const area =
-            Number(areaInput.value) || 0;
+            Number(areaInput?.value) || 0;
 
+
+        /*
+            Поддерживающая:
+            1500 ₽ до 30 м²
+            +60 ₽ за каждый м² свыше 30
+
+            Генеральная:
+            2500 ₽ до 30 м²
+            +100 ₽ за каждый м² свыше 30
+
+            После ремонта:
+            4000 ₽ до 30 м²
+            +140 ₽ за каждый м² свыше 30
+
+            Мытьё окон:
+            800 ₽ фиксировано
+        */
 
         if (
-            selectedService !== "windows" &&
-            selectedService !== "renovation" &&
-            area > 50
+            selectedService === "maintenance" &&
+            area > 30
         ) {
-
-            const extraArea =
-                area - 50;
-
-
-            const extraBlocks =
-                Math.ceil(
-                    extraArea / 10
-                );
-
-
             price +=
-                extraBlocks * 100;
-
+                (area - 30) * 60;
         }
 
 
         if (
+            selectedService === "general" &&
+            area > 30
+        ) {
+            price +=
+                (area - 30) * 100;
+        }
+
+
+        if (
+            selectedService === "renovation" &&
+            area > 30
+        ) {
+            price +=
+                (area - 30) * 140;
+        }
+
+
+        if (
+            windowsOption &&
             windowsOption.checked
         ) {
-
             price +=
                 additionalPrices.windows;
-
         }
 
 
         if (
+            fridgeOption &&
             fridgeOption.checked
         ) {
-
             price +=
                 additionalPrices.fridge;
-
         }
 
 
         if (
+            ovenOption &&
             ovenOption.checked
         ) {
-
             price +=
                 additionalPrices.oven;
-
         }
 
 
-        return price;
-
+        return Math.round(price);
     }
 
 
-    function updatePrice() {
+    function formatPrice(price) {
+        return (
+            Number(price)
+                .toLocaleString("ru-RU")
+            + " ₽"
+        );
+    }
+
+
+    function updatePrice(animated = true) {
+        if (!totalPrice) {
+            return;
+        }
 
         const price =
             calculatePrice();
 
-
         totalPrice.textContent =
-            price.toLocaleString(
-                "ru-RU"
-            ) + " ₽";
+            formatPrice(price);
 
-    }
-
-
-    // ==========================================
-    // START ORDER
-    // ==========================================
-
-    startOrderButton.addEventListener(
-        "click",
-        function () {
-
-            showPage("order");
-
-            updatePrice();
-
-        }
-    );
-
-
-    // ==========================================
-    // SERVICE CARDS
-    // ==========================================
-
-    document
-        .querySelectorAll(".service-card")
-        .forEach(function (card) {
-
-            card.addEventListener(
-                "click",
-                function () {
-
-                    const service =
-                        card.dataset.service;
-
-
-                    if (!service) {
-
-                        return;
-
-                    }
-
-
-                    selectService(
-                        service
-                    );
-
-
-                    showPage("order");
-
-
-                    updatePrice();
-
-                }
+        const priceCard =
+            totalPrice.closest(
+                ".price-card"
             );
-
-        });
-
-
-    // ==========================================
-    // SERVICE OPTIONS
-    // ==========================================
-
-    document
-        .querySelectorAll(".service-option")
-        .forEach(function (option) {
-
-            option.addEventListener(
-                "click",
-                function () {
-
-                    const service =
-                        option.dataset.service;
-
-
-                    if (!service) {
-
-                        return;
-
-                    }
-
-
-                    selectService(
-                        service
-                    );
-
-
-                    updatePrice();
-
-                }
-            );
-
-        });
-
-
-    // ==========================================
-    // NAVIGATION
-    // ==========================================
-
-    homeNav.addEventListener(
-        "click",
-        function () {
-
-            showPage("home");
-
-        }
-    );
-
-
-    orderNav.addEventListener(
-        "click",
-        function () {
-
-            showPage("order");
-
-            updatePrice();
-
-        }
-    );
-
-
-    profileNav.addEventListener(
-        "click",
-        function () {
-
-            openProfile();
-
-        }
-    );
-
-
-    // ==========================================
-    // PROFILE
-    // ==========================================
-
-    if (profileButton) {
-
-        profileButton.addEventListener(
-            "click",
-            function () {
-
-                openProfile();
-
-            }
-        );
-
-    }
-
-
-    function openProfile() {
-
-        if (!profileModal) {
-
-            return;
-
-        }
-
-
-        profileModal.hidden =
-            false;
-
-
-        profileModal.classList.add(
-            "active"
-        );
-
 
         if (
-            tg &&
-            tg.initDataUnsafe &&
-            tg.initDataUnsafe.user
+            animated &&
+            priceCard
         ) {
+            priceCard.classList.remove(
+                "price-updated"
+            );
 
-            const user =
-                tg.initDataUnsafe.user;
+            void priceCard.offsetWidth;
 
+            priceCard.classList.add(
+                "price-updated"
+            );
 
-            let text = "";
-
-
-            if (user.first_name) {
-
-                text +=
-                    user.first_name;
-
-            }
-
-
-            if (user.last_name) {
-
-                text +=
-                    " " +
-                    user.last_name;
-
-            }
-
-
-            if (user.username) {
-
-                text +=
-                    "\n@" +
-                    user.username;
-
-            }
-
-
-            profileText.textContent =
-                text ||
-                "Пользователь Telegram";
-
+            setTimeout(
+                function () {
+                    priceCard.classList.remove(
+                        "price-updated"
+                    );
+                },
+                300
+            );
         }
-
-        else {
-
-            profileText.textContent =
-                "Профиль доступен внутри Telegram.";
-
-        }
-
     }
 
 
-    // ==========================================
-    // CLOSE PROFILE
-    // ==========================================
+    /* ========================================
+       PRICE EVENTS
+    ======================================== */
 
-    if (closeProfileButton) {
-
-        closeProfileButton.addEventListener(
-            "click",
+    if (areaInput) {
+        areaInput.addEventListener(
+            "input",
             function () {
-
-                profileModal.classList.remove(
-                    "active"
-                );
-
-                profileModal.hidden =
-                    true;
-
-            }
-        );
-
-    }
-
-
-    if (profileModal) {
-
-        profileModal.addEventListener(
-            "click",
-            function (event) {
+                let value =
+                    Number(areaInput.value);
 
                 if (
-                    event.target ===
-                    profileModal
+                    Number.isNaN(value)
                 ) {
-
-                    profileModal.classList.remove(
-                        "active"
-                    );
-
-                    profileModal.hidden =
-                        true;
-
+                    value = 1;
                 }
 
+                if (value < 1) {
+                    value = 1;
+                }
+
+                if (value > 1000) {
+                    value = 1000;
+                }
+
+                areaInput.value =
+                    value;
+
+                updatePrice();
             }
         );
-
     }
 
 
-    // ==========================================
-    // PRICE INPUTS
-    // ==========================================
+    [
+        windowsOption,
+        fridgeOption,
+        ovenOption
+    ].forEach(
+        function (checkbox) {
+            if (!checkbox) {
+                return;
+            }
 
-    areaInput.addEventListener(
-        "input",
-        updatePrice
+            checkbox.addEventListener(
+                "change",
+                function () {
+                    updatePrice();
+                }
+            );
+        }
     );
 
 
-    windowsOption.addEventListener(
-        "change",
-        updatePrice
-    );
-
-
-    fridgeOption.addEventListener(
-        "change",
-        updatePrice
-    );
-
-
-    ovenOption.addEventListener(
-        "change",
-        updatePrice
-    );
-
-
-    // ==========================================
-    // DATE
-    // ==========================================
+    /* ========================================
+       DATE / TIME
+    ======================================== */
 
     const today =
         new Date();
 
-
     const year =
         today.getFullYear();
-
 
     const month =
         String(
             today.getMonth() + 1
         ).padStart(2, "0");
 
-
     const day =
         String(
             today.getDate()
         ).padStart(2, "0");
 
-
-    dateInput.min =
+    const todayString =
         `${year}-${month}-${day}`;
 
 
-    // ==========================================
-    // TIME
-    // ==========================================
+    if (dateInput) {
+        dateInput.min =
+            todayString;
 
-    timeInput.min =
-        "08:00";
-
-    timeInput.max =
-        "21:00";
-
-
-    // ==========================================
-    // SUBMIT ORDER
-    // ==========================================
-
-    submitOrderButton.addEventListener(
-        "click",
-        function () {
-
-            const area =
-                areaInput.value.trim();
+        if (!dateInput.value) {
+            dateInput.value =
+                todayString;
+        }
+    }
 
 
-            const date =
-                dateInput.value;
+    if (timeInput) {
+        timeInput.min = "08:00";
+        timeInput.max = "21:00";
+    }
 
 
-            const time =
-                timeInput.value;
+    /* ========================================
+       PROFILE
+    ======================================== */
 
+    function openProfile() {
+        if (!profileModal) {
+            return;
+        }
 
-            const address =
-                addressInput.value.trim();
+        if (tg?.initDataUnsafe?.user) {
+            const user =
+                tg.initDataUnsafe.user;
 
+            const firstName =
+                user.first_name || "";
 
-            const name =
-                nameInput.value.trim();
+            const lastName =
+                user.last_name || "";
 
+            const username =
+                user.username
+                    ? `@${user.username}`
+                    : "";
 
-            const phone =
-                phoneInput.value.trim();
+            const fullName =
+                `${firstName} ${lastName}`.trim();
 
-
-            // ----------------------------------
-            // VALIDATION
-            // ----------------------------------
-
-            if (!area) {
-
-                alert(
-                    "Укажи площадь помещения."
-                );
-
-                areaInput.focus();
-
-                return;
-
+            if (profileText) {
+                if (username) {
+                    profileText.textContent =
+                        `${fullName} ${username}`;
+                } else {
+                    profileText.textContent =
+                        fullName ||
+                        "Пользователь Telegram";
+                }
             }
-
-
-            if (
-                Number(area) <= 0
-            ) {
-
-                alert(
-                    "Площадь должна быть больше 0."
-                );
-
-                areaInput.focus();
-
-                return;
-
+        } else {
+            if (profileText) {
+                profileText.textContent =
+                    "Профиль доступен внутри Telegram";
             }
+        }
 
+        profileModal.hidden = false;
 
-            if (!date) {
-
-                alert(
-                    "Выбери дату."
+        requestAnimationFrame(
+            function () {
+                profileModal.classList.add(
+                    "active"
                 );
-
-                dateInput.focus();
-
-                return;
-
             }
+        );
+    }
 
 
-            if (!time) {
+    function closeProfile() {
+        if (!profileModal) {
+            return;
+        }
 
-                alert(
-                    "Выбери время."
-                );
+        profileModal.classList.remove(
+            "active"
+        );
 
-                timeInput.focus();
-
-                return;
-
-            }
-
-
-            if (!address) {
-
-                alert(
-                    "Укажи адрес."
-                );
-
-                addressInput.focus();
-
-                return;
-
-            }
+        setTimeout(
+            function () {
+                profileModal.hidden = true;
+            },
+            300
+        );
+    }
 
 
-            if (!name) {
-
-                alert(
-                    "Укажи имя."
-                );
-
-                nameInput.focus();
-
-                return;
-
-            }
+    if (profileButton) {
+        profileButton.addEventListener(
+            "click",
+            openProfile
+        );
+    }
 
 
-            if (!phone) {
-
-                alert(
-                    "Укажи номер телефона."
-                );
-
-                phoneInput.focus();
-
-                return;
-
-            }
+    if (closeProfileButton) {
+        closeProfileButton.addEventListener(
+            "click",
+            closeProfile
+        );
+    }
 
 
-            // ----------------------------------
-            // CREATE ORDER
-            // ----------------------------------
-
-            const price =
-                calculatePrice();
-
-
-            const orderData = {
-
-                service:
-                    selectedService,
-
-                serviceName:
-                    serviceNames[
-                        selectedService
-                    ],
-
-                area:
-                    Number(area),
-
-                windows:
-                    windowsOption.checked,
-
-                fridge:
-                    fridgeOption.checked,
-
-                oven:
-                    ovenOption.checked,
-
-                date:
-                    date,
-
-                time:
-                    time,
-
-                address:
-                    address,
-
-                name:
-                    name,
-
-                phone:
-                    phone,
-
-                price:
-                    price
-
-            };
-
-
-            // ----------------------------------
-            // LOCAL COPY
-            // ----------------------------------
-
-            localStorage.setItem(
-                "cleaningLastOrder",
-                JSON.stringify(
-                    orderData
-                )
+    if (profileModal) {
+        const overlay =
+            profileModal.querySelector(
+                ".modal-overlay"
             );
 
+        if (overlay) {
+            overlay.addEventListener(
+                "click",
+                closeProfile
+            );
+        }
+    }
 
-            // ----------------------------------
-            // TELEGRAM
-            // ----------------------------------
 
-            if (
-                tg &&
-                typeof tg.sendData ===
-                    "function"
-            ) {
+    /* ========================================
+       BACK HOME
+    ======================================== */
 
-                tg.sendData(
-                    JSON.stringify(
-                        orderData
-                    )
-                );
-
+    if (backHomeButton) {
+        backHomeButton.addEventListener(
+            "click",
+            function () {
+                showPage("home");
             }
-
-            else {
-
-                console.log(
-                    "Telegram WebApp недоступен."
-                );
-
-            }
+        );
+    }
 
 
-            // ----------------------------------
-            // SUCCESS SCREEN
-            // ----------------------------------
+    /* ========================================
+       FORM VALIDATION
+    ======================================== */
 
-            summaryService.textContent =
-                orderData.serviceName;
-
-
-            summaryDate.textContent =
-                orderData.date;
-
-
-            summaryTime.textContent =
-                orderData.time;
+    function showValidationMessage(
+        message
+    ) {
+        alert(message);
+    }
 
 
-            summaryPrice.textContent =
-                orderData.price
-                    .toLocaleString(
-                        "ru-RU"
-                    ) + " ₽";
+    function validateForm() {
+        const area =
+            Number(areaInput?.value) || 0;
+
+        if (
+            area < 1 ||
+            area > 1000
+        ) {
+            showValidationMessage(
+                "Укажи площадь от 1 до 1000 м²."
+            );
+
+            areaInput?.focus();
+
+            return false;
+        }
 
 
-            showPage("success");
+        if (
+            !dateInput ||
+            !dateInput.value
+        ) {
+            showValidationMessage(
+                "Выбери дату уборки."
+            );
+
+            dateInput?.focus();
+
+            return false;
+        }
 
 
-            // ----------------------------------
-            // HAPTIC
-            // ----------------------------------
+        if (
+            dateInput.value <
+            todayString
+        ) {
+            showValidationMessage(
+                "Нельзя выбрать прошедшую дату."
+            );
 
-            if (
-                tg &&
-                tg.HapticFeedback
-            ) {
+            dateInput.focus();
 
-                tg.HapticFeedback
-                    .notificationOccurred(
-                        "success"
+            return false;
+        }
+
+
+        if (
+            !timeInput ||
+            !timeInput.value
+        ) {
+            showValidationMessage(
+                "Выбери время уборки."
+            );
+
+            timeInput?.focus();
+
+            return false;
+        }
+
+
+        if (
+            timeInput.value < "08:00" ||
+            timeInput.value > "21:00"
+        ) {
+            showValidationMessage(
+                "Время уборки должно быть с 08:00 до 21:00."
+            );
+
+            timeInput.focus();
+
+            return false;
+        }
+
+
+        const address =
+            addressInput?.value.trim() || "";
+
+        if (!address) {
+            showValidationMessage(
+                "Укажи адрес."
+            );
+
+            addressInput?.focus();
+
+            return false;
+        }
+
+
+        const clientName =
+            nameInput?.value.trim() || "";
+
+        if (!clientName) {
+            showValidationMessage(
+                "Укажи имя."
+            );
+
+            nameInput?.focus();
+
+            return false;
+        }
+
+
+        const phone =
+            phoneInput?.value.trim() || "";
+
+        if (!phone) {
+            showValidationMessage(
+                "Укажи номер телефона."
+            );
+
+            phoneInput?.focus();
+
+            return false;
+        }
+
+
+        const phoneDigits =
+            phone.replace(
+                /\D/g,
+                ""
+            );
+
+        if (
+            phoneDigits.length < 10
+        ) {
+            showValidationMessage(
+                "Проверь номер телефона."
+            );
+
+            phoneInput?.focus();
+
+            return false;
+        }
+
+
+        return true;
+    }
+
+
+    /* ========================================
+       SUBMIT ORDER
+    ======================================== */
+
+    if (submitOrderButton) {
+        submitOrderButton.addEventListener(
+            "click",
+            function () {
+                if (!validateForm()) {
+                    return;
+                }
+
+
+                const price =
+                    calculatePrice();
+
+                const orderData = {
+                    service:
+                        selectedService,
+
+                    serviceName:
+                        serviceNames[
+                            selectedService
+                        ],
+
+                    area:
+                        Number(
+                            areaInput.value
+                        ),
+
+                    extras: {
+                        windows:
+                            Boolean(
+                                windowsOption?.checked
+                            ),
+
+                        fridge:
+                            Boolean(
+                                fridgeOption?.checked
+                            ),
+
+                        oven:
+                            Boolean(
+                                ovenOption?.checked
+                            )
+                    },
+
+                    date:
+                        dateInput.value,
+
+                    time:
+                        timeInput.value,
+
+                    address:
+                        addressInput.value.trim(),
+
+                    name:
+                        nameInput.value.trim(),
+
+                    phone:
+                        phoneInput.value.trim(),
+
+                    price:
+                        price
+                };
+
+
+                /* ================================
+                   SAVE LOCALLY
+                ================================= */
+
+                try {
+                    localStorage.setItem(
+                        "lastCleaningOrder",
+                        JSON.stringify(
+                            orderData
+                        )
                     );
+                } catch (error) {
+                    console.warn(
+                        "Не удалось сохранить заказ:",
+                        error
+                    );
+                }
 
+
+                /* ================================
+                   SEND TO TELEGRAM BOT
+                ================================= */
+
+                if (
+                    tg &&
+                    typeof tg.sendData ===
+                        "function"
+                ) {
+                    tg.sendData(
+                        JSON.stringify(
+                            orderData
+                        )
+                    );
+                } else {
+                    console.warn(
+                        "Telegram WebApp sendData недоступен."
+                    );
+                }
+
+
+                /* ================================
+                   SUCCESS SCREEN
+                ================================= */
+
+                if (summaryService) {
+                    summaryService.textContent =
+                        serviceNames[
+                            selectedService
+                        ];
+                }
+
+                if (summaryDate) {
+                    summaryDate.textContent =
+                        formatDate(
+                            dateInput.value
+                        );
+                }
+
+                if (summaryTime) {
+                    summaryTime.textContent =
+                        timeInput.value;
+                }
+
+                if (summaryPrice) {
+                    summaryPrice.textContent =
+                        formatPrice(price);
+                }
+
+
+                showPage("success");
+
+
+                /* ================================
+                   HAPTIC
+                ================================= */
+
+                if (
+                    tg &&
+                    tg.HapticFeedback &&
+                    typeof tg.HapticFeedback
+                        .notificationOccurred ===
+                        "function"
+                ) {
+                    tg.HapticFeedback
+                        .notificationOccurred(
+                            "success"
+                        );
+                }
             }
+        );
+    }
 
+
+    /* ========================================
+       DATE FORMAT
+    ======================================== */
+
+    function formatDate(dateString) {
+        if (!dateString) {
+            return "";
         }
-    );
 
+        const parts =
+            dateString.split("-");
 
-    // ==========================================
-    // BACK HOME
-    // ==========================================
-
-    backHomeButton.addEventListener(
-        "click",
-        function () {
-
-            showPage("home");
-
+        if (parts.length !== 3) {
+            return dateString;
         }
-    );
+
+        const year =
+            Number(parts[0]);
+
+        const month =
+            Number(parts[1]);
+
+        const day =
+            Number(parts[2]);
+
+        const date =
+            new Date(
+                year,
+                month - 1,
+                day
+            );
+
+        return date.toLocaleDateString(
+            "ru-RU",
+            {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        );
+    }
 
 
-    // ==========================================
-    // INITIALIZATION
-    // ==========================================
+    /* ========================================
+       INITIALIZATION
+    ======================================== */
 
     selectService(
         "maintenance"
     );
 
-    updatePrice();
+    updatePrice(false);
 
     showPage("home");
 
+
+    /* ========================================
+       TELEGRAM THEME UPDATE
+    ======================================== */
+
+    if (tg) {
+        updateTelegramTheme(
+            document.documentElement
+                .dataset.theme ||
+            "light"
+        );
+    }
 });

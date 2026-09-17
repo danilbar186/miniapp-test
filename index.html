@@ -8,7 +8,11 @@
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     >
 
-    <meta name="theme-color" content="#f5f7f4">
+    <meta
+        name="theme-color"
+        content="#f5f7f4"
+        id="themeColorMeta"
+    >
 
     <title>Чистый Дом</title>
 
@@ -21,7 +25,7 @@
 
         <!-- ========================================
              HEADER
-        ========================================= -->
+        ======================================== -->
 
         <header class="header">
 
@@ -35,20 +39,44 @@
                 </h1>
             </div>
 
-            <button
-                class="profile-button"
-                id="profileButton"
-                type="button"
-            >
-                <span>👤</span>
-            </button>
+            <div class="header-actions">
+
+                <!-- THEME -->
+
+                <button
+                    class="theme-button"
+                    id="themeButton"
+                    type="button"
+                    aria-label="Переключить тему"
+                >
+                    <span
+                        class="theme-icon"
+                        id="themeIcon"
+                    >
+                        ☾
+                    </span>
+                </button>
+
+
+                <!-- PROFILE -->
+
+                <button
+                    class="profile-button"
+                    id="profileButton"
+                    type="button"
+                    aria-label="Открыть профиль"
+                >
+                    <span>👤</span>
+                </button>
+
+            </div>
 
         </header>
 
 
         <!-- ========================================
              HOME
-        ========================================= -->
+        ======================================== -->
 
         <main id="homePage" class="page active">
 
@@ -371,7 +399,7 @@
 
         <!-- ========================================
              ORDER PAGE
-        ========================================= -->
+        ======================================== -->
 
         <main
             id="orderPage"
@@ -589,6 +617,7 @@
                         max="1000"
                         value="50"
                         placeholder="50"
+                        inputmode="numeric"
                     >
 
                     <span>
@@ -922,7 +951,7 @@
 
         <!-- ========================================
              SUCCESS PAGE
-        ========================================= -->
+        ======================================== -->
 
         <main
             id="successPage"
@@ -1022,7 +1051,7 @@
 
         <!-- ========================================
              PROFILE
-        ========================================= -->
+        ======================================== -->
 
         <div
             class="modal"
@@ -1065,7 +1094,7 @@
 
         <!-- ========================================
              BOTTOM NAVIGATION
-        ========================================= -->
+        ======================================== -->
 
         <nav class="bottom-nav">
 
@@ -1126,7 +1155,7 @@
 
     <!-- ========================================
          TELEGRAM
-    ========================================= -->
+    ======================================== -->
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
