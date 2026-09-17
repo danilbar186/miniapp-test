@@ -1,1186 +1,614 @@
-document.addEventListener("DOMContentLoaded", function () {
-    /* ========================================
-       TELEGRAM
-    ======================================== */
+const tg = window.Telegram?.WebApp || null;
 
-    const tg = window.Telegram?.WebApp;
+if (tg) {
+    tg.ready();
+    tg.expand();
+}
 
-    if (tg) {
-        tg.ready();
-        tg.expand();
+/* =========================
+   ELEMENTS
+========================= */
+
+const themeButton = document.getElementById("themeButton");
+const themeIcon = document.getElementById("themeIcon");
+const themeColorMeta = document.getElementById("themeColorMeta");
+
+const profileButton = document.getElementById("profileButton");
+const profileModal = document.getElementById("profileModal");
+const closeProfileButton = document.getElementById("closeProfileButton");
+
+const navButtons = document.querySelectorAll(".bottom-nav button");
+const pages = document.querySelectorAll(".page");
+
+const serviceCards = document.querySelectorAll(".service-card");
+
+const areaInput = document.getElementById("areaInput");
+
+const windowsCheckbox = document.getElementById("windowsCheckbox");
+const fridgeCheckbox = document.getElementById("fridgeCheckbox");
+const ovenCheckbox = document.getElementById("ovenCheckbox");
+
+const priceValue = document.getElementById("priceValue");
+
+const startOrderButton = document.getElementById("startOrderButton");
+const submitOrderButton = document.getElementById("submitOrderButton");
+
+const orderForm = document.getElementById("orderForm");
+
+const addressInput = document.getElementById("addressInput");
+const nameInput = document.getElementById("nameInput");
+const phoneInput = document.getElementById("phoneInput");
+
+const successPage = document.getElementById("successPage");
+const orderNumber = document.getElementById("orderNumber");
+
+const backToHomeButton = document.getElementById("backToHomeButton");
+
+let selectedService = "maintenance";
+
+/* =========================
+   THEME
+========================= */
+
+function getInitialTheme() {
+    const savedTheme = localStorage.getItem("cleaningTheme");
+
+    if (savedTheme === "dark" || savedTheme === "light") {
+        return savedTheme;
     }
 
-
-    /* ========================================
-       ELEMENTS
-    ======================================== */
-
-    const homePage = document.getElementById("homePage");
-    const orderPage = document.getElementById("orderPage");
-    const successPage = document.getElementById("successPage");
-
-    const homeNav = document.getElementById("homeNav");
-    const orderNav = document.getElementById("orderNav");
-    const profileNav = document.getElementById("profileNav");
-
-    const profileButton = document.getElementById("profileButton");
-    const profileModal = document.getElementById("profileModal");
-    const closeProfileButton = document.getElementById("closeProfileButton");
-    const profileText = document.getElementById("profileText");
-
-    const themeButton = document.getElementById("themeButton");
-    const themeIcon = document.getElementById("themeIcon");
-    const themeColorMeta = document.getElementById("themeColorMeta");
-
-    const backHomeButton = document.getElementById("backHomeButton");
-
-    const submitOrderButton =
-        document.getElementById("submitOrderButton");
-
-    const areaInput =
-        document.getElementById("areaInput");
-
-    const windowsOption =
-        document.getElementById("windowsOption");
-
-    const fridgeOption =
-        document.getElementById("fridgeOption");
-
-    const ovenOption =
-        document.getElementById("ovenOption");
-
-    const totalPrice =
-        document.getElementById("totalPrice");
-
-    const dateInput =
-        document.getElementById("dateInput");
-
-    const timeInput =
-        document.getElementById("timeInput");
-
-    const addressInput =
-        document.getElementById("addressInput");
-
-    const nameInput =
-        document.getElementById("nameInput");
-
-    const phoneInput =
-        document.getElementById("phoneInput");
-
-    const summaryService =
-        document.getElementById("summaryService");
-
-    const summaryDate =
-        document.getElementById("summaryDate");
-
-    const summaryTime =
-        document.getElementById("summaryTime");
-
-    const summaryPrice =
-        document.getElementById("summaryPrice");
-
-    const serviceOptions =
-        document.querySelectorAll(".service-option");
-
-    const serviceCards =
-        document.querySelectorAll(".service-card");
-
-
-    /* ========================================
-       SERVICES / PRICES
-    ======================================== */
-
-    const servicePrices = {
-        maintenance: 1500,
-        general: 2500,
-        windows: 800,
-        renovation: 4000
-    };
-
-    const serviceNames = {
-        maintenance: "Поддерживающая уборка",
-        general: "Генеральная уборка",
-        windows: "Мытьё окон",
-        renovation: "Уборка после ремонта"
-    };
-
-    const additionalPrices = {
-        windows: 800,
-        fridge: 500,
-        oven: 400
-    };
-
-    let selectedService = "maintenance";
-
-
-    /* ========================================
-       THEME
-    ======================================== */
-
-    const THEME_STORAGE_KEY = "cleaningTheme";
-
-
-    function getPreferredTheme() {
-        const savedTheme =
-            localStorage.getItem(THEME_STORAGE_KEY);
-
-        if (
-            savedTheme === "light" ||
-            savedTheme === "dark"
-        ) {
-            return savedTheme;
-        }
-
-        if (
-            tg &&
-            tg.colorScheme === "dark"
-        ) {
-            return "dark";
-        }
-
-        if (
-            window.matchMedia &&
-            window.matchMedia(
-                "(prefers-color-scheme: dark)"
-            ).matches
-        ) {
-            return "dark";
-        }
-
-        return "light";
+    if (tg && tg.colorScheme === "dark") {
+        return "dark";
     }
 
-
-    function updateTelegramTheme(theme) {
-        const isDark = theme === "dark";
-
-        const backgroundColor =
-            isDark
-                ? "#101512"
-                : "#f5f7f4";
-
-        if (themeColorMeta) {
-            themeColorMeta.setAttribute(
-                "content",
-                backgroundColor
-            );
-        }
-
-        if (tg) {
-            if (typeof tg.setHeaderColor === "function") {
-                tg.setHeaderColor(backgroundColor);
-            }
-
-            if (
-                typeof tg.setBackgroundColor === "function"
-            ) {
-                tg.setBackgroundColor(backgroundColor);
-            }
-        }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        return "dark";
     }
 
+    return "light";
+}
 
-    function updateThemeIcon(theme) {
-        if (!themeIcon) {
-            return;
-        }
+function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
 
-        if (theme === "dark") {
-            themeIcon.textContent = "☀";
-            themeButton.setAttribute(
-                "aria-label",
-                "Включить светлую тему"
-            );
-        } else {
-            themeIcon.textContent = "☾";
-            themeButton.setAttribute(
-                "aria-label",
-                "Включить тёмную тему"
-            );
-        }
+    if (themeIcon) {
+        themeIcon.textContent = theme === "dark" ? "☀" : "☾";
     }
-
-
-    function applyTheme(theme, save = true) {
-        if (
-            theme !== "light" &&
-            theme !== "dark"
-        ) {
-            theme = "light";
-        }
-
-        document.documentElement.dataset.theme =
-            theme;
-
-        updateThemeIcon(theme);
-        updateTelegramTheme(theme);
-
-        if (save) {
-            localStorage.setItem(
-                THEME_STORAGE_KEY,
-                theme
-            );
-        }
-    }
-
-
-    applyTheme(
-        getPreferredTheme(),
-        false
-    );
-
 
     if (themeButton) {
-        themeButton.addEventListener(
-            "click",
-            function () {
-                const currentTheme =
-                    document.documentElement.dataset.theme ||
-                    "light";
-
-                const newTheme =
-                    currentTheme === "dark"
-                        ? "light"
-                        : "dark";
-
-                applyTheme(
-                    newTheme,
-                    true
-                );
-
-                if (
-                    tg &&
-                    typeof tg.HapticFeedback?.impactOccurred ===
-                        "function"
-                ) {
-                    tg.HapticFeedback.impactOccurred(
-                        "light"
-                    );
-                }
-            }
+        themeButton.setAttribute(
+            "aria-label",
+            theme === "dark"
+                ? "Включить светлую тему"
+                : "Включить тёмную тему"
         );
     }
 
-
-    /* ========================================
-       PAGE SWITCHING
-    ======================================== */
-
-    const pages = [
-        homePage,
-        orderPage,
-        successPage
-    ];
-
-
-    function showPage(pageName) {
-        pages.forEach(function (page) {
-            if (!page) {
-                return;
-            }
-
-            page.hidden = true;
-            page.classList.remove("active");
-        });
-
-        let targetPage = null;
-
-        if (pageName === "home") {
-            targetPage = homePage;
-        }
-
-        if (pageName === "order") {
-            targetPage = orderPage;
-        }
-
-        if (pageName === "success") {
-            targetPage = successPage;
-        }
-
-        if (!targetPage) {
-            return;
-        }
-
-        targetPage.hidden = false;
-
-        void targetPage.offsetWidth;
-
-        targetPage.classList.add("active");
-
-        updateNavigation(pageName);
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-    }
-
-
-    function updateNavigation(pageName) {
-        if (homeNav) {
-            homeNav.classList.remove("active");
-        }
-
-        if (orderNav) {
-            orderNav.classList.remove("active");
-        }
-
-        if (profileNav) {
-            profileNav.classList.remove("active");
-        }
-
-        if (pageName === "home") {
-            if (homeNav) {
-                homeNav.classList.add("active");
-            }
-        }
-
-        if (pageName === "order") {
-            if (orderNav) {
-                orderNav.classList.add("active");
-            }
-        }
-    }
-
-
-    /* ========================================
-       HOME / ORDER NAVIGATION
-    ======================================== */
-
-    if (homeNav) {
-        homeNav.addEventListener(
-            "click",
-            function () {
-                showPage("home");
-            }
+    if (themeColorMeta) {
+        themeColorMeta.setAttribute(
+            "content",
+            theme === "dark" ? "#111411" : "#f5f7f4"
         );
     }
 
+    if (tg) {
+        try {
+            tg.setHeaderColor(
+                theme === "dark" ? "#111411" : "#f5f7f4"
+            );
 
-    if (orderNav) {
-        orderNav.addEventListener(
-            "click",
-            function () {
-                showPage("order");
-            }
-        );
+            tg.setBackgroundColor(
+                theme === "dark" ? "#111411" : "#f5f7f4"
+            );
+        } catch (error) {
+            console.log("Telegram theme error:", error);
+        }
     }
+}
 
+let currentTheme = getInitialTheme();
+applyTheme(currentTheme);
 
-    if (profileNav) {
-        profileNav.addEventListener(
-            "click",
-            function () {
-                openProfile();
-            }
+if (themeButton) {
+    themeButton.addEventListener("click", () => {
+        currentTheme =
+            currentTheme === "dark"
+                ? "light"
+                : "dark";
+
+        localStorage.setItem(
+            "cleaningTheme",
+            currentTheme
         );
-    }
 
+        applyTheme(currentTheme);
+    });
+}
 
-    /* ========================================
-       SERVICE CARDS
-    ======================================== */
+/* =========================
+   PAGE NAVIGATION
+========================= */
 
-    serviceCards.forEach(function (card) {
-        card.addEventListener(
-            "click",
-            function () {
-                const service =
-                    card.dataset.service;
-
-                if (!service) {
-                    return;
-                }
-
-                selectService(service);
-
-                showPage("order");
-            }
+function showPage(pageId) {
+    pages.forEach((page) => {
+        page.classList.toggle(
+            "active",
+            page.id === pageId
         );
     });
 
-
-    /* ========================================
-       SERVICE OPTIONS
-    ======================================== */
-
-    serviceOptions.forEach(function (option) {
-        option.addEventListener(
-            "click",
-            function () {
-                const service =
-                    option.dataset.service;
-
-                if (!service) {
-                    return;
-                }
-
-                selectService(service);
-            }
+    navButtons.forEach((button) => {
+        button.classList.toggle(
+            "active",
+            button.dataset.page === pageId
         );
     });
 
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
 
-    function selectService(service) {
-        if (
-            !Object.prototype.hasOwnProperty.call(
-                servicePrices,
-                service
-            )
-        ) {
+navButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        const pageId = button.dataset.page;
+
+        if (pageId) {
+            showPage(pageId);
+        }
+    });
+});
+
+/* =========================
+   PROFILE
+========================= */
+
+if (profileButton && profileModal) {
+    profileButton.addEventListener("click", () => {
+        profileModal.classList.add("active");
+    });
+}
+
+if (closeProfileButton && profileModal) {
+    closeProfileButton.addEventListener("click", () => {
+        profileModal.classList.remove("active");
+    });
+}
+
+if (profileModal) {
+    profileModal.addEventListener("click", (event) => {
+        if (event.target === profileModal) {
+            profileModal.classList.remove("active");
+        }
+    });
+}
+
+/* =========================
+   PRICING
+========================= */
+
+const PRICES = {
+    maintenance: {
+        name: "Поддерживающая уборка",
+        base: 1500,
+        baseArea: 30,
+        pricePerExtraM2: 60
+    },
+
+    general: {
+        name: "Генеральная уборка",
+        base: 2500,
+        baseArea: 30,
+        pricePerExtraM2: 100
+    },
+
+    renovation: {
+        name: "Уборка после ремонта",
+        base: 4000,
+        baseArea: 30,
+        pricePerExtraM2: 140
+    },
+
+    windows: {
+        name: "Мытьё окон",
+        base: 800,
+        baseArea: 0,
+        pricePerExtraM2: 0
+    }
+};
+
+function calculatePrice() {
+    const area = Number(areaInput?.value) || 0;
+
+    let price = 0;
+
+    const service = PRICES[selectedService];
+
+    if (!service) {
+        return 0;
+    }
+
+    if (selectedService === "windows") {
+        price = 800;
+    } else {
+        if (area <= service.baseArea) {
+            price = service.base;
+        } else {
+            const extraArea = area - service.baseArea;
+
+            price =
+                service.base +
+                extraArea * service.pricePerExtraM2;
+        }
+    }
+
+    if (fridgeCheckbox?.checked) {
+        price += 500;
+    }
+
+    if (ovenCheckbox?.checked) {
+        price += 400;
+    }
+
+    return Math.round(price);
+}
+
+function updatePrice() {
+    const price = calculatePrice();
+
+    if (!priceValue) {
+        return;
+    }
+
+    priceValue.classList.remove("price-update");
+
+    void priceValue.offsetWidth;
+
+    priceValue.textContent =
+        price > 0
+            ? `${price.toLocaleString("ru-RU")} ₽`
+            : "Рассчитаем";
+
+    priceValue.classList.add("price-update");
+}
+
+/* =========================
+   SERVICE SELECTION
+========================= */
+
+serviceCards.forEach((card) => {
+    card.addEventListener("click", () => {
+        const service = card.dataset.service;
+
+        if (!service || !PRICES[service]) {
             return;
         }
 
         selectedService = service;
 
-        serviceOptions.forEach(
-            function (option) {
-                option.classList.remove(
-                    "selected"
-                );
+        serviceCards.forEach((item) => {
+            item.classList.remove("selected");
+        });
 
-                if (
-                    option.dataset.service ===
-                    service
-                ) {
-                    option.classList.add(
-                        "selected"
-                    );
-                }
-            }
-        );
+        card.classList.add("selected");
 
         updatePrice();
-    }
+    });
+});
 
+/* =========================
+   AREA / EXTRAS
+========================= */
 
-    /* ========================================
-       PRICE CALCULATION
-    ======================================== */
+if (areaInput) {
+    areaInput.addEventListener("input", () => {
+        let value = areaInput.value.replace(/\D/g, "");
 
-    function calculatePrice() {
-        let price =
-            servicePrices[selectedService] || 0;
-
-        const area =
-            Number(areaInput?.value) || 0;
-
-
-        /*
-            Поддерживающая:
-            1500 ₽ до 30 м²
-            +60 ₽ за каждый м² свыше 30
-
-            Генеральная:
-            2500 ₽ до 30 м²
-            +100 ₽ за каждый м² свыше 30
-
-            После ремонта:
-            4000 ₽ до 30 м²
-            +140 ₽ за каждый м² свыше 30
-
-            Мытьё окон:
-            800 ₽ фиксировано
-        */
-
-        if (
-            selectedService === "maintenance" &&
-            area > 30
-        ) {
-            price +=
-                (area - 30) * 60;
+        if (value.length > 5) {
+            value = value.slice(0, 5);
         }
 
+        areaInput.value = value;
 
-        if (
-            selectedService === "general" &&
-            area > 30
-        ) {
-            price +=
-                (area - 30) * 100;
-        }
+        updatePrice();
+    });
+}
 
-
-        if (
-            selectedService === "renovation" &&
-            area > 30
-        ) {
-            price +=
-                (area - 30) * 140;
-        }
-
-
-        if (
-            windowsOption &&
-            windowsOption.checked
-        ) {
-            price +=
-                additionalPrices.windows;
-        }
-
-
-        if (
-            fridgeOption &&
-            fridgeOption.checked
-        ) {
-            price +=
-                additionalPrices.fridge;
-        }
-
-
-        if (
-            ovenOption &&
-            ovenOption.checked
-        ) {
-            price +=
-                additionalPrices.oven;
-        }
-
-
-        return Math.round(price);
-    }
-
-
-    function formatPrice(price) {
-        return (
-            Number(price)
-                .toLocaleString("ru-RU")
-            + " ₽"
-        );
-    }
-
-
-    function updatePrice(animated = true) {
-        if (!totalPrice) {
-            return;
-        }
-
-        const price =
-            calculatePrice();
-
-        totalPrice.textContent =
-            formatPrice(price);
-
-        const priceCard =
-            totalPrice.closest(
-                ".price-card"
-            );
-
-        if (
-            animated &&
-            priceCard
-        ) {
-            priceCard.classList.remove(
-                "price-updated"
-            );
-
-            void priceCard.offsetWidth;
-
-            priceCard.classList.add(
-                "price-updated"
-            );
-
-            setTimeout(
-                function () {
-                    priceCard.classList.remove(
-                        "price-updated"
-                    );
-                },
-                300
-            );
-        }
-    }
-
-
-    /* ========================================
-       PRICE EVENTS
-    ======================================== */
-
-    if (areaInput) {
-        areaInput.addEventListener(
-            "input",
-            function () {
-                let value =
-                    Number(areaInput.value);
-
-                if (
-                    Number.isNaN(value)
-                ) {
-                    value = 1;
-                }
-
-                if (value < 1) {
-                    value = 1;
-                }
-
-                if (value > 1000) {
-                    value = 1000;
-                }
-
-                areaInput.value =
-                    value;
-
-                updatePrice();
-            }
-        );
-    }
-
-
-    [
-        windowsOption,
-        fridgeOption,
-        ovenOption
-    ].forEach(
-        function (checkbox) {
-            if (!checkbox) {
-                return;
-            }
-
-            checkbox.addEventListener(
-                "change",
-                function () {
-                    updatePrice();
-                }
-            );
-        }
+if (windowsCheckbox) {
+    windowsCheckbox.addEventListener(
+        "change",
+        updatePrice
     );
+}
 
+if (fridgeCheckbox) {
+    fridgeCheckbox.addEventListener(
+        "change",
+        updatePrice
+    );
+}
 
-    /* ========================================
-       DATE / TIME
-    ======================================== */
+if (ovenCheckbox) {
+    ovenCheckbox.addEventListener(
+        "change",
+        updatePrice
+    );
+}
 
-    const today =
-        new Date();
+/* =========================
+   START ORDER
+========================= */
 
-    const year =
-        today.getFullYear();
+if (startOrderButton) {
+    startOrderButton.addEventListener("click", () => {
+        const area = Number(areaInput?.value) || 0;
 
-    const month =
-        String(
-            today.getMonth() + 1
-        ).padStart(2, "0");
+        if (
+            selectedService !== "windows" &&
+            area <= 0
+        ) {
+            if (areaInput) {
+                areaInput.focus();
+            }
 
-    const day =
-        String(
-            today.getDate()
-        ).padStart(2, "0");
-
-    const todayString =
-        `${year}-${month}-${day}`;
-
-
-    if (dateInput) {
-        dateInput.min =
-            todayString;
-
-        if (!dateInput.value) {
-            dateInput.value =
-                todayString;
-        }
-    }
-
-
-    if (timeInput) {
-        timeInput.min = "08:00";
-        timeInput.max = "21:00";
-    }
-
-
-    /* ========================================
-       PROFILE
-    ======================================== */
-
-    function openProfile() {
-        if (!profileModal) {
             return;
         }
 
-        if (tg?.initDataUnsafe?.user) {
-            const user =
-                tg.initDataUnsafe.user;
+        updatePrice();
 
-            const firstName =
-                user.first_name || "";
+        showPage("orderPage");
+    });
+}
 
-            const lastName =
-                user.last_name || "";
+/* =========================
+   FORM VALIDATION
+========================= */
 
-            const username =
-                user.username
-                    ? `@${user.username}`
-                    : "";
+function validateForm() {
+    let valid = true;
 
-            const fullName =
-                `${firstName} ${lastName}`.trim();
+    const area = Number(areaInput?.value) || 0;
 
-            if (profileText) {
-                if (username) {
-                    profileText.textContent =
-                        `${fullName} ${username}`;
-                } else {
-                    profileText.textContent =
-                        fullName ||
-                        "Пользователь Telegram";
-                }
-            }
-        } else {
-            if (profileText) {
-                profileText.textContent =
-                    "Профиль доступен внутри Telegram";
-            }
+    if (
+        selectedService !== "windows" &&
+        area <= 0
+    ) {
+        valid = false;
+
+        if (areaInput) {
+            areaInput.classList.add("error");
+        }
+    } else if (areaInput) {
+        areaInput.classList.remove("error");
+    }
+
+    if (!addressInput?.value.trim()) {
+        valid = false;
+
+        if (addressInput) {
+            addressInput.classList.add("error");
+        }
+    } else if (addressInput) {
+        addressInput.classList.remove("error");
+    }
+
+    if (!nameInput?.value.trim()) {
+        valid = false;
+
+        if (nameInput) {
+            nameInput.classList.add("error");
+        }
+    } else if (nameInput) {
+        nameInput.classList.remove("error");
+    }
+
+    const phone = phoneInput?.value.trim() || "";
+
+    if (phone.length < 6) {
+        valid = false;
+
+        if (phoneInput) {
+            phoneInput.classList.add("error");
+        }
+    } else if (phoneInput) {
+        phoneInput.classList.remove("error");
+    }
+
+    return valid;
+}
+
+/* =========================
+   REMOVE ERROR ON INPUT
+========================= */
+
+[
+    areaInput,
+    addressInput,
+    nameInput,
+    phoneInput
+].forEach((input) => {
+    if (!input) {
+        return;
+    }
+
+    input.addEventListener("input", () => {
+        input.classList.remove("error");
+    });
+});
+
+/* =========================
+   SUBMIT ORDER
+========================= */
+
+if (orderForm) {
+    orderForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (!validateForm()) {
+            return;
         }
 
-        profileModal.hidden = false;
+        const price = calculatePrice();
 
-        requestAnimationFrame(
-            function () {
-                profileModal.classList.add(
-                    "active"
+        const orderData = {
+            service: selectedService,
+            serviceName:
+                PRICES[selectedService]?.name || "",
+
+            area:
+                Number(areaInput?.value) || 0,
+
+            extras: {
+                windows:
+                    Boolean(windowsCheckbox?.checked),
+
+                fridge:
+                    Boolean(fridgeCheckbox?.checked),
+
+                oven:
+                    Boolean(ovenCheckbox?.checked)
+            },
+
+            address:
+                addressInput?.value.trim() || "",
+
+            name:
+                nameInput?.value.trim() || "",
+
+            phone:
+                phoneInput?.value.trim() || "",
+
+            price: price
+        };
+
+        /* =========================
+           SAVE LAST ORDER
+        ========================= */
+
+        try {
+            localStorage.setItem(
+                "lastCleaningOrder",
+                JSON.stringify(orderData)
+            );
+        } catch (error) {
+            console.log(
+                "LocalStorage error:",
+                error
+            );
+        }
+
+        /* =========================
+           SEND TO TELEGRAM BOT
+        ========================= */
+
+        if (
+            tg &&
+            typeof tg.sendData === "function"
+        ) {
+            try {
+                tg.sendData(
+                    JSON.stringify(orderData)
+                );
+            } catch (error) {
+                console.log(
+                    "Telegram sendData error:",
+                    error
                 );
             }
-        );
-    }
-
-
-    function closeProfile() {
-        if (!profileModal) {
-            return;
         }
 
-        profileModal.classList.remove(
-            "active"
-        );
+        /* =========================
+           SUCCESS
+        ========================= */
 
-        setTimeout(
-            function () {
-                profileModal.hidden = true;
-            },
-            300
-        );
-    }
-
-
-    if (profileButton) {
-        profileButton.addEventListener(
-            "click",
-            openProfile
-        );
-    }
-
-
-    if (closeProfileButton) {
-        closeProfileButton.addEventListener(
-            "click",
-            closeProfile
-        );
-    }
-
-
-    if (profileModal) {
-        const overlay =
-            profileModal.querySelector(
-                ".modal-overlay"
+        const randomNumber =
+            Math.floor(
+                1000 + Math.random() * 9000
             );
 
-        if (overlay) {
-            overlay.addEventListener(
-                "click",
-                closeProfile
-            );
+        if (orderNumber) {
+            orderNumber.textContent =
+                `№${randomNumber}`;
         }
-    }
 
+        showPage("successPage");
 
-    /* ========================================
-       BACK HOME
-    ======================================== */
-
-    if (backHomeButton) {
-        backHomeButton.addEventListener(
-            "click",
-            function () {
-                showPage("home");
+        if (tg) {
+            try {
+                tg.HapticFeedback.notificationOccurred(
+                    "success"
+                );
+            } catch (error) {
+                console.log(
+                    "Haptic error:",
+                    error
+                );
             }
-        );
-    }
-
-
-    /* ========================================
-       FORM VALIDATION
-    ======================================== */
-
-    function showValidationMessage(
-        message
-    ) {
-        alert(message);
-    }
-
-
-    function validateForm() {
-        const area =
-            Number(areaInput?.value) || 0;
-
-        if (
-            area < 1 ||
-            area > 1000
-        ) {
-            showValidationMessage(
-                "Укажи площадь от 1 до 1000 м²."
-            );
-
-            areaInput?.focus();
-
-            return false;
         }
-
-
-        if (
-            !dateInput ||
-            !dateInput.value
-        ) {
-            showValidationMessage(
-                "Выбери дату уборки."
-            );
-
-            dateInput?.focus();
-
-            return false;
-        }
-
-
-        if (
-            dateInput.value <
-            todayString
-        ) {
-            showValidationMessage(
-                "Нельзя выбрать прошедшую дату."
-            );
-
-            dateInput.focus();
-
-            return false;
-        }
-
-
-        if (
-            !timeInput ||
-            !timeInput.value
-        ) {
-            showValidationMessage(
-                "Выбери время уборки."
-            );
-
-            timeInput?.focus();
-
-            return false;
-        }
-
-
-        if (
-            timeInput.value < "08:00" ||
-            timeInput.value > "21:00"
-        ) {
-            showValidationMessage(
-                "Время уборки должно быть с 08:00 до 21:00."
-            );
-
-            timeInput.focus();
-
-            return false;
-        }
-
-
-        const address =
-            addressInput?.value.trim() || "";
-
-        if (!address) {
-            showValidationMessage(
-                "Укажи адрес."
-            );
-
-            addressInput?.focus();
-
-            return false;
-        }
-
-
-        const clientName =
-            nameInput?.value.trim() || "";
-
-        if (!clientName) {
-            showValidationMessage(
-                "Укажи имя."
-            );
-
-            nameInput?.focus();
-
-            return false;
-        }
-
-
-        const phone =
-            phoneInput?.value.trim() || "";
-
-        if (!phone) {
-            showValidationMessage(
-                "Укажи номер телефона."
-            );
-
-            phoneInput?.focus();
-
-            return false;
-        }
-
-
-        const phoneDigits =
-            phone.replace(
-                /\D/g,
-                ""
-            );
-
-        if (
-            phoneDigits.length < 10
-        ) {
-            showValidationMessage(
-                "Проверь номер телефона."
-            );
-
-            phoneInput?.focus();
-
-            return false;
-        }
-
-
-        return true;
-    }
-
-
-    /* ========================================
-       SUBMIT ORDER
-    ======================================== */
-
-    if (submitOrderButton) {
-        submitOrderButton.addEventListener(
-            "click",
-            function () {
-                if (!validateForm()) {
-                    return;
-                }
-
-
-                const price =
-                    calculatePrice();
-
-                const orderData = {
-                    service:
-                        selectedService,
-
-                    serviceName:
-                        serviceNames[
-                            selectedService
-                        ],
-
-                    area:
-                        Number(
-                            areaInput.value
-                        ),
-
-                    extras: {
-                        windows:
-                            Boolean(
-                                windowsOption?.checked
-                            ),
-
-                        fridge:
-                            Boolean(
-                                fridgeOption?.checked
-                            ),
-
-                        oven:
-                            Boolean(
-                                ovenOption?.checked
-                            )
-                    },
-
-                    date:
-                        dateInput.value,
-
-                    time:
-                        timeInput.value,
-
-                    address:
-                        addressInput.value.trim(),
-
-                    name:
-                        nameInput.value.trim(),
-
-                    phone:
-                        phoneInput.value.trim(),
-
-                    price:
-                        price
-                };
-
-
-                /* ================================
-                   SAVE LOCALLY
-                ================================= */
-
-                try {
-                    localStorage.setItem(
-                        "lastCleaningOrder",
-                        JSON.stringify(
-                            orderData
-                        )
-                    );
-                } catch (error) {
-                    console.warn(
-                        "Не удалось сохранить заказ:",
-                        error
-                    );
-                }
-
-
-                /* ================================
-                   SEND TO TELEGRAM BOT
-                ================================= */
-
-                if (
-                    tg &&
-                    typeof tg.sendData ===
-                        "function"
-                ) {
-                    tg.sendData(
-                        JSON.stringify(
-                            orderData
-                        )
-                    );
-                } else {
-                    console.warn(
-                        "Telegram WebApp sendData недоступен."
-                    );
-                }
-
-
-                /* ================================
-                   SUCCESS SCREEN
-                ================================= */
-
-                if (summaryService) {
-                    summaryService.textContent =
-                        serviceNames[
-                            selectedService
-                        ];
-                }
-
-                if (summaryDate) {
-                    summaryDate.textContent =
-                        formatDate(
-                            dateInput.value
-                        );
-                }
-
-                if (summaryTime) {
-                    summaryTime.textContent =
-                        timeInput.value;
-                }
-
-                if (summaryPrice) {
-                    summaryPrice.textContent =
-                        formatPrice(price);
-                }
-
-
-                showPage("success");
-
-
-                /* ================================
-                   HAPTIC
-                ================================= */
-
-                if (
-                    tg &&
-                    tg.HapticFeedback &&
-                    typeof tg.HapticFeedback
-                        .notificationOccurred ===
-                        "function"
-                ) {
-                    tg.HapticFeedback
-                        .notificationOccurred(
-                            "success"
-                        );
-                }
+    });
+}
+
+/* =========================
+   SUBMIT BUTTON
+========================= */
+
+if (
+    submitOrderButton &&
+    orderForm
+) {
+    submitOrderButton.addEventListener(
+        "click",
+        () => {
+            if (
+                typeof orderForm.requestSubmit ===
+                "function"
+            ) {
+                orderForm.requestSubmit();
+            } else {
+                orderForm.dispatchEvent(
+                    new Event("submit", {
+                        bubbles: true,
+                        cancelable: true
+                    })
+                );
             }
-        );
-    }
-
-
-    /* ========================================
-       DATE FORMAT
-    ======================================== */
-
-    function formatDate(dateString) {
-        if (!dateString) {
-            return "";
         }
-
-        const parts =
-            dateString.split("-");
-
-        if (parts.length !== 3) {
-            return dateString;
-        }
-
-        const year =
-            Number(parts[0]);
-
-        const month =
-            Number(parts[1]);
-
-        const day =
-            Number(parts[2]);
-
-        const date =
-            new Date(
-                year,
-                month - 1,
-                day
-            );
-
-        return date.toLocaleDateString(
-            "ru-RU",
-            {
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            }
-        );
-    }
-
-
-    /* ========================================
-       INITIALIZATION
-    ======================================== */
-
-    selectService(
-        "maintenance"
     );
+}
 
-    updatePrice(false);
+/* =========================
+   BACK TO HOME
+========================= */
 
-    showPage("home");
+if (backToHomeButton) {
+    backToHomeButton.addEventListener(
+        "click",
+        () => {
+            showPage("homePage");
+        }
+    );
+}
 
+/* =========================
+   INITIALIZATION
+========================= */
 
-    /* ========================================
-       TELEGRAM THEME UPDATE
-    ======================================== */
+if (serviceCards.length > 0) {
+    serviceCards.forEach((card) => {
+        card.classList.remove("selected");
+    });
 
-    if (tg) {
-        updateTelegramTheme(
-            document.documentElement
-                .dataset.theme ||
-            "light"
+    const maintenanceCard =
+        document.querySelector(
+            '.service-card[data-service="maintenance"]'
         );
+
+    if (maintenanceCard) {
+        maintenanceCard.classList.add("selected");
     }
-});
+}
+
+updatePrice();
+
+showPage("homePage");
