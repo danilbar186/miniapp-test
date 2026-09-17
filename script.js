@@ -6,6 +6,28 @@ if (tg) {
 }
 
 /* ========================================
+   API
+======================================== */
+
+const API_URL = "https://tremendous-debut-presently-ahead.trycloudflare.com";
+
+async function apiFetch(path, options = {}) {
+    const initData = tg?.initData || "";
+    const headers = {
+        "X-Telegram-Init-Data": initData,
+        ...(options.headers || {})
+    };
+    const url = API_URL + path;
+    const response = await fetch(url, { ...options, headers });
+    if (!response.ok) {
+        const err = new Error("HTTP " + response.status);
+        err.status = response.status;
+        throw err;
+    }
+    return response.json();
+}
+
+/* ========================================
    ELEMENTS
 ======================================== */
 
@@ -56,6 +78,11 @@ const quickServicesButton   = document.getElementById("quickServicesButton");
 const quickPromoButton      = document.getElementById("quickPromoButton");
 const quickAboutButton      = document.getElementById("quickAboutButton");
 const quickContactButton    = document.getElementById("quickContactButton");
+
+/* My orders */
+
+const myOrdersBackButton = document.getElementById("myOrdersBackButton");
+const myOrdersList       = document.getElementById("myOrdersList");
 
 let selectedService    = "maintenance";
 let modalHideTimer     = null;
@@ -366,23 +393,28 @@ quickOrderButton?.addEventListener("click", () => {
 });
 
 quickMyOrdersButton?.addEventListener("click", () => {
-    console.log("Мои заказы — экран будет на шаге 2");
+    renderMyOrders();
+    showPage("myOrdersPage");
 });
 
 quickServicesButton?.addEventListener("click", () => {
-    console.log("Услуги — экран будет на шаге 3");
+    console.log("Услуги — экран будет позже");
 });
 
 quickPromoButton?.addEventListener("click", () => {
-    console.log("Акции — экран будет на шаге 5");
+    console.log("Акции — экран будет позже");
 });
 
 quickAboutButton?.addEventListener("click", () => {
-    console.log("О компании — экран будет на шаге 4");
+    console.log("О компании — экран будет позже");
 });
 
 quickContactButton?.addEventListener("click", () => {
-    console.log("Связаться — экран будет на шаге 4");
+    console.log("Связаться — экран будет позже");
+});
+
+myOrdersBackButton?.addEventListener("click", () => {
+    showPage("homePage");
 });
 
 /* ========================================
@@ -483,6 +515,162 @@ submitOrderButton?.addEventListener("click", () => {
         console.log("Haptic error:", e);
     }
 });
+
+/* ========================================
+   MY ORDERS
+======================================== */
+
+function escapeHtml(s) {
+    return String(s || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function renderOrderCard(order) {
+    const status = order.status || "Новая";
+    const statusClass = status === "Завершена" ? "status-done" : "status-new";
+
+    const extrasLine = (order.extras && order.extras.length)
+        ? `<div class="order-item-row"><span class="label">Доп.</span><span class="value">${escapeHtml(order.extras.join(", "))}</span></div>`
+        : "";
+
+    const areaLine = (order.area && order.area > 0 && order.service !== "windows")
+        ? `<div class="order-item-row"><span class="label">Площадь</span><span class="value">${order.area} м²</span></div>`
+        : "";
+
+    return `
+        <div class="order-item" data-id="${order.id}">
+            <div class="order-item-head">
+                <div class="order-item-title">
+                    <span class="order-item-number">ЗАКАЗ №${escapeHtml(order.id)}</span>
+                    <span class="order-item-service">${escapeHtml(order.serviceName)}</span>
+                </div>
+                <span class="order-item-status ${statusClass}">${escapeHtml(status)}</span>
+            </div>
+
+            <div class="order-item-rows">
+                ${areaLine}
+                ${extrasLine}
+                <div class="order-item-row">
+                    <span class="label">Адрес</span>
+                    <span class="value">${escapeHtml(order.address)}</span>
+                </div>
+                <div class="order-item-row">
+                    <span class="label">Создан</span>
+                    <span class="value">${escapeHtml(order.createdAt || "—")}</span>
+                </div>
+                <div class="order-item-row">
+                    <span class="label">Стоимость</span>
+                    <span class="value order-item-price">${formatPrice(order.price || 0)}</span>
+                </div>
+            </div>
+
+            <div class="order-item-actions">
+                <button
+                    class="order-item-btn"
+                    data-action="contact"
+                    data-id="${order.id}"
+                    type="button"
+                >
+                    💬 Связаться
+                </button>
+                <button
+                    class="order-item-btn danger"
+                    data-action="delete"
+                    data-id="${order.id}"
+                    type="button"
+                >
+                    🗑 Отменить
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function renderEmptyOrders(message) {
+    if (!myOrdersList) return;
+    myOrdersList.innerHTML = `
+        <div class="my-orders-empty">
+            <div class="my-orders-empty-icon">📋</div>
+            <h3>Заказов пока нет</h3>
+            <p>${escapeHtml(message || "Оформите первую заявку — и она появится здесь.")}</p>
+        </div>
+    `;
+}
+
+async function renderMyOrders() {
+    if (!myOrdersList) return;
+
+    myOrdersList.innerHTML = `
+        <div class="my-orders-empty">
+            <div class="my-orders-empty-icon">⏳</div>
+            <p>Загружаем заказы...</p>
+        </div>
+    `;
+
+    try {
+        const data = await apiFetch("/api/orders");
+        const orders = data.orders || [];
+
+        if (orders.length === 0) {
+            renderEmptyOrders();
+            return;
+        }
+
+        myOrdersList.innerHTML = orders.map(renderOrderCard).join("");
+
+        myOrdersList.querySelectorAll(".order-item-btn").forEach((btn) => {
+            btn.addEventListener("click", () => handleOrderAction(btn));
+        });
+    } catch (e) {
+        console.log("renderMyOrders error:", e);
+        if (e.status === 401) {
+            renderEmptyOrders("Откройте приложение через Telegram, чтобы увидеть заказы.");
+        } else {
+            renderEmptyOrders("Не удалось загрузить заказы. Попробуйте позже.");
+        }
+    }
+}
+
+async function handleOrderAction(btn) {
+    const action = btn.dataset.action;
+    const id = btn.dataset.id;
+
+    if (action === "delete") {
+        let confirmed = false;
+
+        if (tg?.showConfirm) {
+            confirmed = await new Promise((resolve) => {
+                tg.showConfirm("Отменить заказ №" + id + "?", resolve);
+            });
+        } else {
+            confirmed = confirm("Отменить заказ №" + id + "?");
+        }
+
+        if (!confirmed) return;
+
+        try {
+            await apiFetch("/api/orders/" + id, { method: "DELETE" });
+            renderMyOrders();
+        } catch (e) {
+            console.log("delete error:", e);
+            if (tg?.showAlert) {
+                tg.showAlert("Не удалось отменить заказ.");
+            } else {
+                alert("Не удалось отменить заказ.");
+            }
+        }
+    } else if (action === "contact") {
+        if (tg?.showAlert) {
+            tg.showAlert("Напишите менеджеру в чат бота.");
+        } else {
+            alert("Напишите менеджеру в чат бота.");
+        }
+    }
+}
 
 /* ========================================
    INIT
