@@ -5,66 +5,63 @@ if (tg) {
     tg.expand();
 }
 
-/* =========================
+/* ========================================
    ELEMENTS
-========================= */
+======================================== */
 
-const themeButton = document.getElementById("themeButton");
-const themeIcon = document.getElementById("themeIcon");
-const themeColorMeta = document.getElementById("themeColorMeta");
+const themeButton      = document.getElementById("themeButton");
+const themeIcon        = document.getElementById("themeIcon");
+const themeColorMeta   = document.getElementById("themeColorMeta");
 
-const profileButton = document.getElementById("profileButton");
-const profileModal = document.getElementById("profileModal");
+const profileButton    = document.getElementById("profileButton");
+const profileModal     = document.getElementById("profileModal");
 const closeProfileButton = document.getElementById("closeProfileButton");
+const profileText      = document.getElementById("profileText");
 
-const navButtons = document.querySelectorAll(".bottom-nav button");
-const pages = document.querySelectorAll(".page");
+const homeNav          = document.getElementById("homeNav");
+const orderNav         = document.getElementById("orderNav");
+const profileNav       = document.getElementById("profileNav");
 
-const serviceCards = document.querySelectorAll(".service-card");
+const pages            = document.querySelectorAll(".page");
 
-const areaInput = document.getElementById("areaInput");
+const serviceCards     = document.querySelectorAll(".service-card");
+const serviceOptions   = document.querySelectorAll(".service-option");
 
-const windowsCheckbox = document.getElementById("windowsCheckbox");
-const fridgeCheckbox = document.getElementById("fridgeCheckbox");
-const ovenCheckbox = document.getElementById("ovenCheckbox");
+const areaInput        = document.getElementById("areaInput");
 
-const priceValue = document.getElementById("priceValue");
+const windowsOption    = document.getElementById("windowsOption");
+const fridgeOption     = document.getElementById("fridgeOption");
+const ovenOption       = document.getElementById("ovenOption");
+
+const totalPrice       = document.getElementById("totalPrice");
 
 const startOrderButton = document.getElementById("startOrderButton");
+const orderBackButton  = document.getElementById("orderBackButton");
 const submitOrderButton = document.getElementById("submitOrderButton");
 
-const orderForm = document.getElementById("orderForm");
+const addressInput     = document.getElementById("addressInput");
+const nameInput        = document.getElementById("nameInput");
+const phoneInput       = document.getElementById("phoneInput");
 
-const addressInput = document.getElementById("addressInput");
-const nameInput = document.getElementById("nameInput");
-const phoneInput = document.getElementById("phoneInput");
+const summaryService   = document.getElementById("summaryService");
+const summaryPrice     = document.getElementById("summaryPrice");
 
-const successPage = document.getElementById("successPage");
-const orderNumber = document.getElementById("orderNumber");
+const backHomeButton   = document.getElementById("backHomeButton");
 
-const backToHomeButton = document.getElementById("backToHomeButton");
+let selectedService    = "maintenance";
+let modalHideTimer     = null;
 
-let selectedService = "maintenance";
-
-/* =========================
+/* ========================================
    THEME
-========================= */
+======================================== */
+
+const THEME_KEY = "cleaningTheme";
 
 function getInitialTheme() {
-    const savedTheme = localStorage.getItem("cleaningTheme");
-
-    if (savedTheme === "dark" || savedTheme === "light") {
-        return savedTheme;
-    }
-
-    if (tg && tg.colorScheme === "dark") {
-        return "dark";
-    }
-
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        return "dark";
-    }
-
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === "dark" || saved === "light") return saved;
+    if (tg?.colorScheme === "dark") return "dark";
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
     return "light";
 }
 
@@ -74,34 +71,24 @@ function applyTheme(theme) {
     if (themeIcon) {
         themeIcon.textContent = theme === "dark" ? "☀" : "☾";
     }
-
     if (themeButton) {
         themeButton.setAttribute(
             "aria-label",
-            theme === "dark"
-                ? "Включить светлую тему"
-                : "Включить тёмную тему"
+            theme === "dark" ? "Включить светлую тему" : "Включить тёмную тему"
         );
     }
-
     if (themeColorMeta) {
         themeColorMeta.setAttribute(
             "content",
             theme === "dark" ? "#111411" : "#f5f7f4"
         );
     }
-
     if (tg) {
         try {
-            tg.setHeaderColor(
-                theme === "dark" ? "#111411" : "#f5f7f4"
-            );
-
-            tg.setBackgroundColor(
-                theme === "dark" ? "#111411" : "#f5f7f4"
-            );
-        } catch (error) {
-            console.log("Telegram theme error:", error);
+            tg.setHeaderColor(theme === "dark" ? "#111411" : "#f5f7f4");
+            tg.setBackgroundColor(theme === "dark" ? "#111411" : "#f5f7f4");
+        } catch (e) {
+            console.log("Telegram theme error:", e);
         }
     }
 }
@@ -109,84 +96,103 @@ function applyTheme(theme) {
 let currentTheme = getInitialTheme();
 applyTheme(currentTheme);
 
-if (themeButton) {
-    themeButton.addEventListener("click", () => {
-        currentTheme =
-            currentTheme === "dark"
-                ? "light"
-                : "dark";
+themeButton?.addEventListener("click", () => {
+    currentTheme = currentTheme === "dark" ? "light" : "dark";
+    localStorage.setItem(THEME_KEY, currentTheme);
+    applyTheme(currentTheme);
+});
 
-        localStorage.setItem(
-            "cleaningTheme",
-            currentTheme
-        );
-
-        applyTheme(currentTheme);
-    });
-}
-
-/* =========================
-   PAGE NAVIGATION
-========================= */
+/* ========================================
+   NAVIGATION
+======================================== */
 
 function showPage(pageId) {
     pages.forEach((page) => {
-        page.classList.toggle(
-            "active",
-            page.id === pageId
-        );
+        const isActive = page.id === pageId;
+        page.classList.toggle("active", isActive);
+        page.hidden = !isActive;
     });
 
-    navButtons.forEach((button) => {
-        button.classList.toggle(
-            "active",
-            button.dataset.page === pageId
-        );
+    [homeNav, orderNav, profileNav].forEach((btn) => {
+        if (btn) btn.classList.remove("active");
     });
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+    if (pageId === "homePage" && homeNav) homeNav.classList.add("active");
+    if (pageId === "orderPage" && orderNav) orderNav.classList.add("active");
+    if (pageId === "successPage" && homeNav) homeNav.classList.add("active");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-navButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-        const pageId = button.dataset.page;
+homeNav?.addEventListener("click", () => showPage("homePage"));
+orderNav?.addEventListener("click", () => showPage("orderPage"));
 
-        if (pageId) {
-            showPage(pageId);
-        }
-    });
-});
-
-/* =========================
+/* ========================================
    PROFILE
-========================= */
+======================================== */
 
-if (profileButton && profileModal) {
-    profileButton.addEventListener("click", () => {
+function updateProfileText() {
+    if (!profileText) return;
+
+    const user = tg?.initDataUnsafe?.user;
+
+    if (user) {
+        const fullName = [user.first_name, user.last_name]
+            .filter(Boolean)
+            .join(" ");
+
+        profileText.textContent =
+            `Имя: ${fullName || "—"}\n` +
+            `Username: ${user.username ? "@" + user.username : "—"}\n` +
+            `ID: ${user.id}`;
+    } else {
+        profileText.textContent =
+            "Откройте приложение через Telegram, чтобы увидеть данные профиля.";
+    }
+}
+
+function openProfile() {
+    if (!profileModal) return;
+
+    if (modalHideTimer) {
+        clearTimeout(modalHideTimer);
+        modalHideTimer = null;
+    }
+
+    updateProfileText();
+    profileModal.hidden = false;
+
+    requestAnimationFrame(() => {
         profileModal.classList.add("active");
     });
 }
 
-if (closeProfileButton && profileModal) {
-    closeProfileButton.addEventListener("click", () => {
-        profileModal.classList.remove("active");
-    });
+function closeProfile() {
+    if (!profileModal) return;
+
+    profileModal.classList.remove("active");
+
+    modalHideTimer = setTimeout(() => {
+        profileModal.hidden = true;
+    }, 300);
 }
 
-if (profileModal) {
-    profileModal.addEventListener("click", (event) => {
-        if (event.target === profileModal) {
-            profileModal.classList.remove("active");
-        }
-    });
-}
+profileButton?.addEventListener("click", openProfile);
+profileNav?.addEventListener("click", openProfile);
+closeProfileButton?.addEventListener("click", closeProfile);
 
-/* =========================
+profileModal?.addEventListener("click", (e) => {
+    if (
+        e.target === profileModal ||
+        e.target.classList.contains("modal-overlay")
+    ) {
+        closeProfile();
+    }
+});
+
+/* ========================================
    PRICING
-========================= */
+======================================== */
 
 const PRICES = {
     maintenance: {
@@ -195,420 +201,257 @@ const PRICES = {
         baseArea: 30,
         pricePerExtraM2: 60
     },
-
     general: {
         name: "Генеральная уборка",
         base: 2500,
         baseArea: 30,
         pricePerExtraM2: 100
     },
-
-    renovation: {
-        name: "Уборка после ремонта",
-        base: 4000,
-        baseArea: 30,
-        pricePerExtraM2: 140
-    },
-
     windows: {
         name: "Мытьё окон",
         base: 800,
         baseArea: 0,
         pricePerExtraM2: 0
+    },
+    renovation: {
+        name: "Уборка после ремонта",
+        base: 4000,
+        baseArea: 30,
+        pricePerExtraM2: 140
     }
 };
 
-function calculatePrice() {
-    const area = Number(areaInput?.value) || 0;
+function getArea() {
+    return Math.max(0, Number(areaInput?.value) || 0);
+}
 
+function formatPrice(value) {
+    return `${value.toLocaleString("ru-RU")} ₽`;
+}
+
+function calculatePrice() {
+    const service = PRICES[selectedService];
+    if (!service) return 0;
+
+    const area = getArea();
     let price = 0;
 
-    const service = PRICES[selectedService];
-
-    if (!service) {
-        return 0;
-    }
-
     if (selectedService === "windows") {
-        price = 800;
+        price = service.base;
+    } else if (area <= service.baseArea) {
+        price = service.base;
     } else {
-        if (area <= service.baseArea) {
-            price = service.base;
-        } else {
-            const extraArea = area - service.baseArea;
-
-            price =
-                service.base +
-                extraArea * service.pricePerExtraM2;
-        }
+        price = service.base + (area - service.baseArea) * service.pricePerExtraM2;
     }
 
-    if (fridgeCheckbox?.checked) {
-        price += 500;
-    }
-
-    if (ovenCheckbox?.checked) {
-        price += 400;
-    }
+    if (windowsOption?.checked && selectedService !== "windows") price += 800;
+    if (fridgeOption?.checked)  price += 500;
+    if (ovenOption?.checked)    price += 400;
 
     return Math.round(price);
 }
 
 function updatePrice() {
-    const price = calculatePrice();
+    if (!totalPrice) return;
 
-    if (!priceValue) {
-        return;
+    const price = calculatePrice();
+    const priceCard = totalPrice.closest(".price-card");
+
+    if (priceCard) {
+        priceCard.classList.remove("price-updated");
+        void priceCard.offsetWidth; // перезапуск анимации
     }
 
-    priceValue.classList.remove("price-update");
+    totalPrice.textContent = formatPrice(price);
 
-    void priceValue.offsetWidth;
-
-    priceValue.textContent =
-        price > 0
-            ? `${price.toLocaleString("ru-RU")} ₽`
-            : "Рассчитаем";
-
-    priceValue.classList.add("price-update");
+    if (priceCard) {
+        priceCard.classList.add("price-updated");
+    }
 }
 
-/* =========================
+/* ========================================
    SERVICE SELECTION
-========================= */
+======================================== */
+
+function selectService(service, openOrder = false) {
+    if (!PRICES[service]) return;
+
+    selectedService = service;
+
+    serviceCards.forEach((card) => {
+        card.classList.toggle("selected", card.dataset.service === service);
+    });
+
+    serviceOptions.forEach((opt) => {
+        opt.classList.toggle("selected", opt.dataset.service === service);
+    });
+
+    // Доп. опция "Мытьё окон" не имеет смысла, если сама услуга — мытьё окон
+    if (windowsOption) {
+        if (service === "windows") {
+            windowsOption.checked = false;
+            windowsOption.disabled = true;
+        } else {
+            windowsOption.disabled = false;
+        }
+    }
+
+    updatePrice();
+
+    if (openOrder) showPage("orderPage");
+}
 
 serviceCards.forEach((card) => {
     card.addEventListener("click", () => {
-        const service = card.dataset.service;
-
-        if (!service || !PRICES[service]) {
-            return;
-        }
-
-        selectedService = service;
-
-        serviceCards.forEach((item) => {
-            item.classList.remove("selected");
-        });
-
-        card.classList.add("selected");
-
-        updatePrice();
+        selectService(card.dataset.service, true);
     });
 });
 
-/* =========================
+serviceOptions.forEach((opt) => {
+    opt.addEventListener("click", () => {
+        selectService(opt.dataset.service);
+    });
+});
+
+/* ========================================
    AREA / EXTRAS
-========================= */
+======================================== */
 
-if (areaInput) {
-    areaInput.addEventListener("input", () => {
-        let value = areaInput.value.replace(/\D/g, "");
+areaInput?.addEventListener("input", () => {
+    let v = Number(areaInput.value);
 
-        if (value.length > 5) {
-            value = value.slice(0, 5);
-        }
+    if (!Number.isNaN(v)) {
+        if (v > 1000) areaInput.value = "1000";
+        if (v < 1 && areaInput.value !== "") areaInput.value = "1";
+    }
 
-        areaInput.value = value;
+    areaInput.classList.remove("error");
+    updatePrice();
+});
 
-        updatePrice();
-    });
-}
+[windowsOption, fridgeOption, ovenOption].forEach((cb) => {
+    cb?.addEventListener("change", updatePrice);
+});
 
-if (windowsCheckbox) {
-    windowsCheckbox.addEventListener(
-        "change",
-        updatePrice
-    );
-}
+/* ========================================
+   START / BACK
+======================================== */
 
-if (fridgeCheckbox) {
-    fridgeCheckbox.addEventListener(
-        "change",
-        updatePrice
-    );
-}
+startOrderButton?.addEventListener("click", () => {
+    showPage("orderPage");
+});
 
-if (ovenCheckbox) {
-    ovenCheckbox.addEventListener(
-        "change",
-        updatePrice
-    );
-}
+orderBackButton?.addEventListener("click", () => {
+    showPage("homePage");
+});
 
-/* =========================
-   START ORDER
-========================= */
+backHomeButton?.addEventListener("click", () => {
+    showPage("homePage");
+});
 
-if (startOrderButton) {
-    startOrderButton.addEventListener("click", () => {
-        const area = Number(areaInput?.value) || 0;
-
-        if (
-            selectedService !== "windows" &&
-            area <= 0
-        ) {
-            if (areaInput) {
-                areaInput.focus();
-            }
-
-            return;
-        }
-
-        updatePrice();
-
-        showPage("orderPage");
-    });
-}
-
-/* =========================
-   FORM VALIDATION
-========================= */
+/* ========================================
+   VALIDATION
+======================================== */
 
 function validateForm() {
     let valid = true;
 
-    const area = Number(areaInput?.value) || 0;
+    const area = getArea();
 
-    if (
-        selectedService !== "windows" &&
-        area <= 0
-    ) {
+    if (selectedService !== "windows" && area <= 0) {
+        areaInput?.classList.add("error");
         valid = false;
-
-        if (areaInput) {
-            areaInput.classList.add("error");
-        }
-    } else if (areaInput) {
-        areaInput.classList.remove("error");
+    } else {
+        areaInput?.classList.remove("error");
     }
 
     if (!addressInput?.value.trim()) {
+        addressInput?.classList.add("error");
         valid = false;
-
-        if (addressInput) {
-            addressInput.classList.add("error");
-        }
-    } else if (addressInput) {
-        addressInput.classList.remove("error");
+    } else {
+        addressInput?.classList.remove("error");
     }
 
     if (!nameInput?.value.trim()) {
+        nameInput?.classList.add("error");
         valid = false;
-
-        if (nameInput) {
-            nameInput.classList.add("error");
-        }
-    } else if (nameInput) {
-        nameInput.classList.remove("error");
+    } else {
+        nameInput?.classList.remove("error");
     }
 
-    const phone = phoneInput?.value.trim() || "";
+    const phoneDigits = (phoneInput?.value || "").replace(/\D/g, "");
 
-    if (phone.length < 6) {
+    if (phoneDigits.length < 6) {
+        phoneInput?.classList.add("error");
         valid = false;
-
-        if (phoneInput) {
-            phoneInput.classList.add("error");
-        }
-    } else if (phoneInput) {
-        phoneInput.classList.remove("error");
+    } else {
+        phoneInput?.classList.remove("error");
     }
 
     return valid;
 }
 
-/* =========================
-   REMOVE ERROR ON INPUT
-========================= */
-
-[
-    areaInput,
-    addressInput,
-    nameInput,
-    phoneInput
-].forEach((input) => {
-    if (!input) {
-        return;
-    }
-
-    input.addEventListener("input", () => {
+[areaInput, addressInput, nameInput, phoneInput].forEach((input) => {
+    input?.addEventListener("input", () => {
         input.classList.remove("error");
     });
 });
 
-/* =========================
+/* ========================================
    SUBMIT ORDER
-========================= */
+======================================== */
 
-if (orderForm) {
-    orderForm.addEventListener("submit", (event) => {
-        event.preventDefault();
+submitOrderButton?.addEventListener("click", () => {
+    if (!validateForm()) return;
 
-        if (!validateForm()) {
-            return;
-        }
+    const price = calculatePrice();
+    const service = PRICES[selectedService];
 
-        const price = calculatePrice();
+    const orderData = {
+        service: selectedService,
+        serviceName: service?.name || "",
+        area: selectedService === "windows" ? 0 : getArea(),
+        extras: {
+            windows: Boolean(windowsOption?.checked && selectedService !== "windows"),
+            fridge:  Boolean(fridgeOption?.checked),
+            oven:    Boolean(ovenOption?.checked)
+        },
+        address: addressInput?.value.trim() || "",
+        name:    nameInput?.value.trim()    || "",
+        phone:   phoneInput?.value.trim()   || "",
+        price:   price
+    };
 
-        const orderData = {
-            service: selectedService,
-            serviceName:
-                PRICES[selectedService]?.name || "",
-
-            area:
-                Number(areaInput?.value) || 0,
-
-            extras: {
-                windows:
-                    Boolean(windowsCheckbox?.checked),
-
-                fridge:
-                    Boolean(fridgeCheckbox?.checked),
-
-                oven:
-                    Boolean(ovenCheckbox?.checked)
-            },
-
-            address:
-                addressInput?.value.trim() || "",
-
-            name:
-                nameInput?.value.trim() || "",
-
-            phone:
-                phoneInput?.value.trim() || "",
-
-            price: price
-        };
-
-        /* =========================
-           SAVE LAST ORDER
-        ========================= */
-
-        try {
-            localStorage.setItem(
-                "lastCleaningOrder",
-                JSON.stringify(orderData)
-            );
-        } catch (error) {
-            console.log(
-                "LocalStorage error:",
-                error
-            );
-        }
-
-        /* =========================
-           SEND TO TELEGRAM BOT
-        ========================= */
-
-        if (
-            tg &&
-            typeof tg.sendData === "function"
-        ) {
-            try {
-                tg.sendData(
-                    JSON.stringify(orderData)
-                );
-            } catch (error) {
-                console.log(
-                    "Telegram sendData error:",
-                    error
-                );
-            }
-        }
-
-        /* =========================
-           SUCCESS
-        ========================= */
-
-        const randomNumber =
-            Math.floor(
-                1000 + Math.random() * 9000
-            );
-
-        if (orderNumber) {
-            orderNumber.textContent =
-                `№${randomNumber}`;
-        }
-
-        showPage("successPage");
-
-        if (tg) {
-            try {
-                tg.HapticFeedback.notificationOccurred(
-                    "success"
-                );
-            } catch (error) {
-                console.log(
-                    "Haptic error:",
-                    error
-                );
-            }
-        }
-    });
-}
-
-/* =========================
-   SUBMIT BUTTON
-========================= */
-
-if (
-    submitOrderButton &&
-    orderForm
-) {
-    submitOrderButton.addEventListener(
-        "click",
-        () => {
-            if (
-                typeof orderForm.requestSubmit ===
-                "function"
-            ) {
-                orderForm.requestSubmit();
-            } else {
-                orderForm.dispatchEvent(
-                    new Event("submit", {
-                        bubbles: true,
-                        cancelable: true
-                    })
-                );
-            }
-        }
-    );
-}
-
-/* =========================
-   BACK TO HOME
-========================= */
-
-if (backToHomeButton) {
-    backToHomeButton.addEventListener(
-        "click",
-        () => {
-            showPage("homePage");
-        }
-    );
-}
-
-/* =========================
-   INITIALIZATION
-========================= */
-
-if (serviceCards.length > 0) {
-    serviceCards.forEach((card) => {
-        card.classList.remove("selected");
-    });
-
-    const maintenanceCard =
-        document.querySelector(
-            '.service-card[data-service="maintenance"]'
-        );
-
-    if (maintenanceCard) {
-        maintenanceCard.classList.add("selected");
+    try {
+        localStorage.setItem("lastCleaningOrder", JSON.stringify(orderData));
+    } catch (e) {
+        console.log("LocalStorage error:", e);
     }
-}
 
-updatePrice();
+    if (tg && typeof tg.sendData === "function") {
+        try {
+            tg.sendData(JSON.stringify(orderData));
+        } catch (e) {
+            console.log("Telegram sendData error:", e);
+        }
+    }
 
+    if (summaryService) summaryService.textContent = orderData.serviceName;
+    if (summaryPrice)   summaryPrice.textContent   = formatPrice(price);
+
+    showPage("successPage");
+
+    try {
+        tg?.HapticFeedback?.notificationOccurred?.("success");
+    } catch (e) {
+        console.log("Haptic error:", e);
+    }
+});
+
+/* ========================================
+   INIT
+======================================== */
+
+selectService(selectedService);
 showPage("homePage");
+updateProfileText();
