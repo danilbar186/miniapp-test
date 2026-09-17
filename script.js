@@ -36,12 +36,6 @@ const ovenOption       = document.getElementById("ovenOption");
 const totalPrice       = document.getElementById("totalPrice");
 
 const startOrderButton = document.getElementById("startOrderButton");
-const quickOrderButton      = document.getElementById("quickOrderButton");
-const quickMyOrdersButton   = document.getElementById("quickMyOrdersButton");
-const quickServicesButton   = document.getElementById("quickServicesButton");
-const quickPromoButton      = document.getElementById("quickPromoButton");
-const quickAboutButton      = document.getElementById("quickAboutButton");
-const quickContactButton    = document.getElementById("quickContactButton");
 const orderBackButton  = document.getElementById("orderBackButton");
 const submitOrderButton = document.getElementById("submitOrderButton");
 
@@ -53,6 +47,15 @@ const summaryService   = document.getElementById("summaryService");
 const summaryPrice     = document.getElementById("summaryPrice");
 
 const backHomeButton   = document.getElementById("backHomeButton");
+
+/* Quick actions */
+
+const quickOrderButton      = document.getElementById("quickOrderButton");
+const quickMyOrdersButton   = document.getElementById("quickMyOrdersButton");
+const quickServicesButton   = document.getElementById("quickServicesButton");
+const quickPromoButton      = document.getElementById("quickPromoButton");
+const quickAboutButton      = document.getElementById("quickAboutButton");
+const quickContactButton    = document.getElementById("quickContactButton");
 
 let selectedService    = "maintenance";
 let modalHideTimer     = null;
@@ -265,7 +268,7 @@ function updatePrice() {
 
     if (priceCard) {
         priceCard.classList.remove("price-updated");
-        void priceCard.offsetWidth; // перезапуск анимации
+        void priceCard.offsetWidth;
     }
 
     totalPrice.textContent = formatPrice(price);
@@ -292,7 +295,6 @@ function selectService(service, openOrder = false) {
         opt.classList.toggle("selected", opt.dataset.service === service);
     });
 
-    // Доп. опция "Мытьё окон" не имеет смысла, если сама услуга — мытьё окон
     if (windowsOption) {
         if (service === "windows") {
             windowsOption.checked = false;
@@ -347,6 +349,18 @@ startOrderButton?.addEventListener("click", () => {
     showPage("orderPage");
 });
 
+orderBackButton?.addEventListener("click", () => {
+    showPage("homePage");
+});
+
+backHomeButton?.addEventListener("click", () => {
+    showPage("homePage");
+});
+
+/* ========================================
+   QUICK ACTIONS
+======================================== */
+
 quickOrderButton?.addEventListener("click", () => {
     showPage("orderPage");
 });
@@ -369,14 +383,6 @@ quickAboutButton?.addEventListener("click", () => {
 
 quickContactButton?.addEventListener("click", () => {
     console.log("Связаться — экран будет на шаге 4");
-});
-
-orderBackButton?.addEventListener("click", () => {
-    showPage("homePage");
-});
-
-backHomeButton?.addEventListener("click", () => {
-    showPage("homePage");
 });
 
 /* ========================================
