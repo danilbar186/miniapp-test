@@ -36,6 +36,12 @@ const ovenOption       = document.getElementById("ovenOption");
 const totalPrice       = document.getElementById("totalPrice");
 
 const startOrderButton = document.getElementById("startOrderButton");
+const quickOrderButton      = document.getElementById("quickOrderButton");
+const quickMyOrdersButton   = document.getElementById("quickMyOrdersButton");
+const quickServicesButton   = document.getElementById("quickServicesButton");
+const quickPromoButton      = document.getElementById("quickPromoButton");
+const quickAboutButton      = document.getElementById("quickAboutButton");
+const quickContactButton    = document.getElementById("quickContactButton");
 const orderBackButton  = document.getElementById("orderBackButton");
 const submitOrderButton = document.getElementById("submitOrderButton");
 
@@ -80,13 +86,13 @@ function applyTheme(theme) {
     if (themeColorMeta) {
         themeColorMeta.setAttribute(
             "content",
-            theme === "dark" ? "#111411" : "#f5f7f4"
+            theme === "dark" ? "#0f0f0f" : "#faf8f4"
         );
     }
     if (tg) {
         try {
-            tg.setHeaderColor(theme === "dark" ? "#111411" : "#f5f7f4");
-            tg.setBackgroundColor(theme === "dark" ? "#111411" : "#f5f7f4");
+            tg.setHeaderColor(theme === "dark" ? "#0f0f0f" : "#faf8f4");
+            tg.setBackgroundColor(theme === "dark" ? "#0f0f0f" : "#faf8f4");
         } catch (e) {
             console.log("Telegram theme error:", e);
         }
@@ -339,6 +345,30 @@ areaInput?.addEventListener("input", () => {
 
 startOrderButton?.addEventListener("click", () => {
     showPage("orderPage");
+});
+
+quickOrderButton?.addEventListener("click", () => {
+    showPage("orderPage");
+});
+
+quickMyOrdersButton?.addEventListener("click", () => {
+    console.log("Мои заказы — экран будет на шаге 2");
+});
+
+quickServicesButton?.addEventListener("click", () => {
+    console.log("Услуги — экран будет на шаге 3");
+});
+
+quickPromoButton?.addEventListener("click", () => {
+    console.log("Акции — экран будет на шаге 5");
+});
+
+quickAboutButton?.addEventListener("click", () => {
+    console.log("О компании — экран будет на шаге 4");
+});
+
+quickContactButton?.addEventListener("click", () => {
+    console.log("Связаться — экран будет на шаге 4");
 });
 
 orderBackButton?.addEventListener("click", () => {

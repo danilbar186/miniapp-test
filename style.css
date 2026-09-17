@@ -7,30 +7,35 @@
 }
 
 :root {
-    --bg: #f5f7f4;
+    --bg: #faf8f4;
     --card: #ffffff;
-    --card-secondary: #f1f4f2;
+    --card-secondary: #f3efe6;
 
-    --text: #17211b;
-    --muted: #78817b;
+    --text: #1a1a1a;
+    --muted: #7a7570;
 
-    --primary: #3d8b68;
-    --primary-dark: #2f7053;
-    --primary-light: #e7f2eb;
+    --primary: #c9a961;
+    --primary-dark: #a8894a;
+    --primary-light: #f7f1e0;
 
-    --yellow: #f2c94c;
+    --gold: #c9a961;
+    --gold-bright: #e8d7a8;
+    --gold-deep: #8a6f3a;
 
-    --border: #e7ebe8;
+    --border: #ebe5d8;
 
-    --danger: #d9534f;
+    --danger: #b83a3a;
 
     --nav-height: 74px;
 
     --shadow:
-        0 5px 18px rgba(24, 45, 35, 0.08);
+        0 5px 18px rgba(26, 26, 26, 0.08);
 
     --shadow-soft:
-        0 4px 15px rgba(23, 45, 33, 0.035);
+        0 4px 15px rgba(26, 26, 26, 0.04);
+
+    --shadow-gold:
+        0 8px 24px rgba(201, 169, 97, 0.22);
 
     --transition:
         0.25s ease;
@@ -42,24 +47,31 @@
 ======================================== */
 
 html[data-theme="dark"] {
-    --bg: #101512;
-    --card: #19201c;
-    --card-secondary: #222b26;
+    --bg: #0f0f0f;
+    --card: #1a1a1a;
+    --card-secondary: #242424;
 
-    --text: #edf3ef;
-    --muted: #9aa69f;
+    --text: #f0ede8;
+    --muted: #8f8b84;
 
-    --primary: #62b88b;
-    --primary-dark: #76c99e;
-    --primary-light: #203c2d;
+    --primary: #d4b978;
+    --primary-dark: #e0c88a;
+    --primary-light: #2a2418;
 
-    --border: #2a352f;
+    --gold: #d4b978;
+    --gold-bright: #ecdcb0;
+    --gold-deep: #a8894a;
+
+    --border: #2a2a2a;
 
     --shadow:
-        0 5px 20px rgba(0, 0, 0, 0.28);
+        0 5px 20px rgba(0, 0, 0, 0.45);
 
     --shadow-soft:
-        0 4px 15px rgba(0, 0, 0, 0.18);
+        0 4px 15px rgba(0, 0, 0, 0.30);
+
+    --shadow-gold:
+        0 8px 24px rgba(212, 185, 120, 0.18);
 }
 
 
@@ -293,7 +305,7 @@ button:active {
 
     overflow: hidden;
 
-    margin-bottom: 34px;
+    margin-bottom: 26px;
     padding: 26px;
 
     border-radius: 28px;
@@ -301,15 +313,15 @@ button:active {
     background:
         linear-gradient(
             135deg,
-            #245f45 0%,
-            #3d8b68 52%,
-            #72ad8d 100%
+            #0f0f0f 0%,
+            #2a2620 55%,
+            #6b5530 100%
         );
 
     color: #ffffff;
 
     box-shadow:
-        0 12px 30px rgba(46, 103, 76, 0.18);
+        0 12px 30px rgba(15, 15, 15, 0.35);
 }
 
 .hero::before {
@@ -517,11 +529,18 @@ button:active {
 }
 
 .hero-button {
-    background: #ffffff;
+    background:
+        linear-gradient(
+            135deg,
+            #e8d7a8 0%,
+            #c9a961 50%,
+            #a8894a 100%
+        );
 
-    color: #285e45;
+    color: #0f0f0f;
 
-    box-shadow: none;
+    box-shadow:
+        0 8px 22px rgba(201, 169, 97, 0.35);
 }
 
 .primary-button:active {
@@ -559,6 +578,112 @@ button:active {
     line-height: 1.1;
 
     letter-spacing: -0.5px;
+}
+
+
+/* ========================================
+   QUICK ACTIONS
+======================================== */
+
+.quick-actions-section {
+    margin-bottom: 30px;
+}
+
+.quick-actions-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.quick-action {
+    position: relative;
+
+    min-height: 92px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    padding: 14px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 18px;
+
+    background: var(--card);
+
+    color: var(--text);
+
+    text-align: left;
+
+    box-shadow: var(--shadow-soft);
+
+    overflow: hidden;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color var(--transition),
+        background-color var(--transition);
+}
+
+.quick-action::after {
+    content: "";
+
+    position: absolute;
+
+    top: 12px;
+    right: 12px;
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: var(--gold);
+
+    opacity: 0.5;
+
+    transition: opacity var(--transition);
+}
+
+.quick-action:hover {
+    transform: translateY(-2px);
+
+    border-color: var(--gold);
+
+    box-shadow:
+        0 8px 22px rgba(201, 169, 97, 0.16);
+}
+
+.quick-action:hover::after {
+    opacity: 1;
+}
+
+.quick-action:active {
+    transform: scale(0.97);
+}
+
+.quick-action-icon {
+    font-size: 22px;
+
+    line-height: 1;
+}
+
+.quick-action-text {
+    font-size: 12px;
+    font-weight: 700;
+
+    line-height: 1.25;
+}
+
+html[data-theme="dark"] .quick-action:hover {
+    box-shadow:
+        0 8px 22px rgba(212, 185, 120, 0.12);
 }
 
 
