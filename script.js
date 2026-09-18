@@ -81,6 +81,12 @@ const summaryService   = document.getElementById("summaryService");
 const summaryPrice     = document.getElementById("summaryPrice");
 
 const backHomeButton   = document.getElementById("backHomeButton");
+/* Confirm page */
+
+const confirmBackButton   = document.getElementById("confirmBackButton");
+const confirmSummary      = document.getElementById("confirmSummary");
+const confirmSubmitButton = document.getElementById("confirmSubmitButton");
+const confirmEditButton   = document.getElementById("confirmEditButton");
 
 /* Quick actions */
 
@@ -548,9 +554,22 @@ function validateForm() {
     });
 });
 
+function escapeHtml(s) {
+    return String(s || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 /* ========================================
    SUBMIT ORDER
 ======================================== */
+
+/* Клик по «Оформить заявку» → открываем подтверждение */
+
+let pendingOrderData = null;
 
 submitOrderButton?.addEventListener("click", () => {
     if (!validateForm()) return;
@@ -585,6 +604,114 @@ submitOrderButton?.addEventListener("click", () => {
         price:   price
     };
 
+    pendingOrderData = orderData;
+    renderConfirmSummary(orderData);
+    showPage("confirmPage");
+});
+
+
+function renderConfirmSummary(order) {
+    if (!confirmSummary) return;
+
+    const rows = [];
+
+    // Услуга
+    rows.push('<div class="confirm-section">');
+    rows.push('<span class="confirm-section-title">УСЛУГА</span>');
+    rows.push(confirmRow("Тип", order.serviceName));
+    if (order.area > 0 && order.service !== "windows") {
+        rows.push(confirmRow("Площадь", order.area + " м²"));
+    }
+    rows.push('</div>');
+
+    // Параметры объекта
+    const objRows = [];
+    if (order.object.rooms)     objRows.push(confirmRow("Комнат", order.object.rooms));
+    if (order.object.bathrooms) objRows.push(confirmRow("Санузлов", order.object.bathrooms));
+    if (order.object.floor)     objRows.push(confirmRow("Этаж", order.object.floor));
+    if (order.object.elevator)  objRows.push(confirmRow("Лифт", "есть"));
+    if (order.object.pets)      objRows.push(confirmRow("Животные", "есть"));
+
+    const dirtMap = { light: "Лёгкое", medium: "Среднее", heavy: "Сильное" };
+    if (dirtMap[order.object.dirtLevel]) {
+        objRows.push(confirmRow("Загрязнение", dirtMap[order.object.dirtLevel]));
+    }
+
+    if (objRows.length) {
+        rows.push('<div class="confirm-section">');
+        rows.push('<span class="confirm-section-title">ПОМЕЩЕНИЕ</span>');
+        rows.push(...objRows);
+        rows.push('</div>');
+    }
+
+    // Доп. услуги
+    const extras = [];
+    if (order.extras.windows)  extras.push("Окна");
+    if (order.extras.fridge)   extras.push("Холодильник");
+    if (order.extras.oven)     extras.push("Духовка");
+    if (order.extras.balcony)  extras.push("Балкон");
+    if (order.extras.sofa)     extras.push("Диван");
+    if (order.extras.mattress) extras.push("Матрас");
+    if (order.extras.cabinets) extras.push("Шкафы");
+
+    if (extras.length) {
+        rows.push('<div class="confirm-section">');
+        rows.push('<span class="confirm-section-title">ДОПОЛНИТЕЛЬНО</span>');
+        rows.push(confirmRow("Услуги", extras.join(", ")));
+        rows.push('</div>');
+    }
+
+    // Адрес
+    rows.push('<div class="confirm-section">');
+    rows.push('<span class="confirm-section-title">АДРЕС</span>');
+    rows.push(confirmRow("Куда", order.address));
+    rows.push('</div>');
+
+    // Контакты
+    rows.push('<div class="confirm-section">');
+    rows.push('<span class="confirm-section-title">КОНТАКТЫ</span>');
+    rows.push(confirmRow("Имя", order.name));
+    rows.push(confirmRow("Телефон", order.phone));
+    rows.push('</div>');
+
+    // Итог
+    const priceFormatted = formatPrice(order.price);
+    rows.push(
+        '<div class="confirm-total">' +
+            '<span class="confirm-total-label">Предварительная стоимость</span>' +
+            '<span class="confirm-total-value">' + priceFormatted + '</span>' +
+        '</div>'
+    );
+
+    confirmSummary.innerHTML = rows.join("");
+}
+
+
+function confirmRow(label, value) {
+    return (
+        '<div class="confirm-row">' +
+            '<span class="confirm-row-label">' + escapeHtml(label) + '</span>' +
+            '<span class="confirm-row-value">' + escapeHtml(value) + '</span>' +
+        '</div>'
+    );
+}
+
+
+/* Кнопки на экране подтверждения */
+
+confirmBackButton?.addEventListener("click", () => {
+    showPage("orderPage");
+});
+
+confirmEditButton?.addEventListener("click", () => {
+    showPage("orderPage");
+});
+
+confirmSubmitButton?.addEventListener("click", () => {
+    if (!pendingOrderData) return;
+
+    const orderData = pendingOrderData;
+
     try {
         localStorage.setItem("lastCleaningOrder", JSON.stringify(orderData));
     } catch (e) {
@@ -600,7 +727,7 @@ submitOrderButton?.addEventListener("click", () => {
     }
 
     if (summaryService) summaryService.textContent = orderData.serviceName;
-    if (summaryPrice)   summaryPrice.textContent   = formatPrice(price);
+    if (summaryPrice)   summaryPrice.textContent   = formatPrice(orderData.price);
 
     showPage("successPage");
 
