@@ -9,7 +9,7 @@ if (tg) {
    API
 ======================================== */
 
-const API_URL = "https://tremendous-debut-presently-ahead.trycloudflare.com";
+const API_URL = "https://plastic-settle-missouri-mid.trycloudflare.com";
 
 async function apiFetch(path, options = {}) {
     const initData = tg?.initData || "";
@@ -393,8 +393,14 @@ quickOrderButton?.addEventListener("click", () => {
 });
 
 quickMyOrdersButton?.addEventListener("click", () => {
-    renderMyOrders();
-    showPage("myOrdersPage");
+    if (tg?.showAlert) {
+        tg.showAlert(
+            "История заказов доступна в боте.\n\n" +
+            "Вернитесь в чат и нажмите 📋 Мои заявки."
+        );
+    } else {
+        alert("История заказов доступна в боте. Нажмите 📋 Мои заявки.");
+    }
 });
 
 quickServicesButton?.addEventListener("click", () => {
