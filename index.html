@@ -16,7 +16,16 @@
 
     <title>Агент Чистоты — Премиальный клининг</title>
 
-    <link rel="stylesheet" href="style.css">
+    <script>
+        (function () {
+            var v = new URLSearchParams(location.search).get("v") || "1";
+            window.__V = v;
+            var link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = "style.css?v=" + v;
+            document.head.appendChild(link);
+        })();
+    </script>
 </head>
 
 <body>
@@ -1655,7 +1664,15 @@
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <script src="script.js"></script>
+    <script>
+        (function () {
+            var v = window.__V || "1";
+            var s = document.createElement("script");
+            s.src = "script.js?v=" + v;
+            s.onload = function () {};
+            document.body.appendChild(s);
+        })();
+    </script>
 
 </body>
 </html>
