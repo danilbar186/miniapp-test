@@ -83,7 +83,20 @@ const quickContactButton    = document.getElementById("quickContactButton");
 
 const myOrdersBackButton = document.getElementById("myOrdersBackButton");
 const myOrdersList       = document.getElementById("myOrdersList");
+/* Static pages */
 
+const servicesBackButton  = document.getElementById("servicesBackButton");
+const servicesOrderButton = document.getElementById("servicesOrderButton");
+
+const promoBackButton     = document.getElementById("promoBackButton");
+const promoOrderButton    = document.getElementById("promoOrderButton");
+
+const aboutBackButton     = document.getElementById("aboutBackButton");
+
+const contactsBackButton  = document.getElementById("contactsBackButton");
+const contactsOrderButton = document.getElementById("contactsOrderButton");
+
+const priceItems          = document.querySelectorAll(".price-item[data-service]");
 let selectedService    = "maintenance";
 let modalHideTimer     = null;
 
@@ -404,23 +417,46 @@ quickMyOrdersButton?.addEventListener("click", () => {
 });
 
 quickServicesButton?.addEventListener("click", () => {
-    console.log("Услуги — экран будет позже");
+    showPage("servicesPage");
 });
 
 quickPromoButton?.addEventListener("click", () => {
-    console.log("Акции — экран будет позже");
+    showPage("promoPage");
 });
 
 quickAboutButton?.addEventListener("click", () => {
-    console.log("О компании — экран будет позже");
+    showPage("aboutPage");
 });
 
 quickContactButton?.addEventListener("click", () => {
-    console.log("Связаться — экран будет позже");
+    showPage("contactsPage");
 });
 
-myOrdersBackButton?.addEventListener("click", () => {
-    showPage("homePage");
+/* Static pages — back buttons */
+
+myOrdersBackButton?.addEventListener("click", () => showPage("homePage"));
+servicesBackButton?.addEventListener("click", () => showPage("homePage"));
+promoBackButton?.addEventListener("click",    () => showPage("homePage"));
+aboutBackButton?.addEventListener("click",    () => showPage("homePage"));
+contactsBackButton?.addEventListener("click", () => showPage("homePage"));
+
+/* Static pages — «Оформить заявку» */
+
+servicesOrderButton?.addEventListener("click", () => showPage("orderPage"));
+promoOrderButton?.addEventListener("click",    () => showPage("orderPage"));
+contactsOrderButton?.addEventListener("click", () => showPage("orderPage"));
+
+/* Price items — клик по услуге → экран заказа с выбранной услугой */
+
+priceItems.forEach((item) => {
+    item.addEventListener("click", () => {
+        const service = item.dataset.service;
+        if (service && PRICES[service]) {
+            selectService(service, true);
+        } else {
+            showPage("orderPage");
+        }
+    });
 });
 
 /* ========================================
