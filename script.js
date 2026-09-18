@@ -49,11 +49,23 @@ const pages            = document.querySelectorAll(".page");
 const serviceCards     = document.querySelectorAll(".service-card");
 const serviceOptions   = document.querySelectorAll(".service-option");
 
+const roomsInput       = document.getElementById("roomsInput");
+const bathroomsInput   = document.getElementById("bathroomsInput");
 const areaInput        = document.getElementById("areaInput");
+const floorInput       = document.getElementById("floorInput");
+
+const elevatorOption   = document.getElementById("elevatorOption");
+const petsOption       = document.getElementById("petsOption");
 
 const windowsOption    = document.getElementById("windowsOption");
 const fridgeOption     = document.getElementById("fridgeOption");
 const ovenOption       = document.getElementById("ovenOption");
+const balconyOption    = document.getElementById("balconyOption");
+const sofaOption       = document.getElementById("sofaOption");
+const mattressOption   = document.getElementById("mattressOption");
+const cabinetsOption   = document.getElementById("cabinetsOption");
+
+const dirtOptions      = document.querySelectorAll(".dirt-option");
 
 const totalPrice       = document.getElementById("totalPrice");
 
@@ -79,10 +91,11 @@ const quickPromoButton      = document.getElementById("quickPromoButton");
 const quickAboutButton      = document.getElementById("quickAboutButton");
 const quickContactButton    = document.getElementById("quickContactButton");
 
-/* My orders */
+/* My orders page (не используется, но кнопки есть) */
 
 const myOrdersBackButton = document.getElementById("myOrdersBackButton");
 const myOrdersList       = document.getElementById("myOrdersList");
+
 /* Static pages */
 
 const servicesBackButton  = document.getElementById("servicesBackButton");
@@ -97,7 +110,9 @@ const contactsBackButton  = document.getElementById("contactsBackButton");
 const contactsOrderButton = document.getElementById("contactsOrderButton");
 
 const priceItems          = document.querySelectorAll(".price-item[data-service]");
+
 let selectedService    = "maintenance";
+let selectedDirt       = "light";
 let modalHideTimer     = null;
 
 /* ========================================
@@ -294,8 +309,12 @@ function calculatePrice() {
     }
 
     if (windowsOption?.checked && selectedService !== "windows") price += 800;
-    if (fridgeOption?.checked)  price += 500;
-    if (ovenOption?.checked)    price += 400;
+    if (fridgeOption?.checked)    price += 500;
+    if (ovenOption?.checked)      price += 400;
+    if (balconyOption?.checked)   price += 800;
+    if (sofaOption?.checked)      price += 1500;
+    if (mattressOption?.checked)  price += 1200;
+    if (cabinetsOption?.checked)  price += 1000;
 
     return Math.round(price);
 }
@@ -377,8 +396,30 @@ areaInput?.addEventListener("input", () => {
     updatePrice();
 });
 
-[windowsOption, fridgeOption, ovenOption].forEach((cb) => {
-    cb?.addEventListener("change", updatePrice);
+[
+    windowsOption,
+    fridgeOption,
+    ovenOption,
+    balconyOption,
+    sofaOption,
+    mattressOption,
+    cabinetsOption
+].forEach((cb) => {
+    cb?.addEventListener("change", () => {
+        console.log("Extra changed:", cb?.id, cb?.checked);
+        updatePrice();
+    });
+});
+
+/* Dirt level */
+
+dirtOptions.forEach((btn) => {
+    btn.addEventListener("click", () => {
+        selectedDirt = btn.dataset.dirt || "light";
+        dirtOptions.forEach((b) => {
+            b.classList.toggle("selected", b === btn);
+        });
+    });
 });
 
 /* ========================================
@@ -522,9 +563,21 @@ submitOrderButton?.addEventListener("click", () => {
         serviceName: service?.name || "",
         area: selectedService === "windows" ? 0 : getArea(),
         extras: {
-            windows: Boolean(windowsOption?.checked && selectedService !== "windows"),
-            fridge:  Boolean(fridgeOption?.checked),
-            oven:    Boolean(ovenOption?.checked)
+            windows:  Boolean(windowsOption?.checked && selectedService !== "windows"),
+            fridge:   Boolean(fridgeOption?.checked),
+            oven:     Boolean(ovenOption?.checked),
+            balcony:  Boolean(balconyOption?.checked),
+            sofa:     Boolean(sofaOption?.checked),
+            mattress: Boolean(mattressOption?.checked),
+            cabinets: Boolean(cabinetsOption?.checked)
+        },
+        object: {
+            rooms:     Number(roomsInput?.value)     || 0,
+            bathrooms: Number(bathroomsInput?.value) || 0,
+            floor:     Number(floorInput?.value)     || 0,
+            elevator:  Boolean(elevatorOption?.checked),
+            pets:      Boolean(petsOption?.checked),
+            dirtLevel: selectedDirt
         },
         address: addressInput?.value.trim() || "",
         name:    nameInput?.value.trim()    || "",
@@ -557,162 +610,6 @@ submitOrderButton?.addEventListener("click", () => {
         console.log("Haptic error:", e);
     }
 });
-
-/* ========================================
-   MY ORDERS
-======================================== */
-
-function escapeHtml(s) {
-    return String(s || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-function renderOrderCard(order) {
-    const status = order.status || "Новая";
-    const statusClass = status === "Завершена" ? "status-done" : "status-new";
-
-    const extrasLine = (order.extras && order.extras.length)
-        ? `<div class="order-item-row"><span class="label">Доп.</span><span class="value">${escapeHtml(order.extras.join(", "))}</span></div>`
-        : "";
-
-    const areaLine = (order.area && order.area > 0 && order.service !== "windows")
-        ? `<div class="order-item-row"><span class="label">Площадь</span><span class="value">${order.area} м²</span></div>`
-        : "";
-
-    return `
-        <div class="order-item" data-id="${order.id}">
-            <div class="order-item-head">
-                <div class="order-item-title">
-                    <span class="order-item-number">ЗАКАЗ №${escapeHtml(order.id)}</span>
-                    <span class="order-item-service">${escapeHtml(order.serviceName)}</span>
-                </div>
-                <span class="order-item-status ${statusClass}">${escapeHtml(status)}</span>
-            </div>
-
-            <div class="order-item-rows">
-                ${areaLine}
-                ${extrasLine}
-                <div class="order-item-row">
-                    <span class="label">Адрес</span>
-                    <span class="value">${escapeHtml(order.address)}</span>
-                </div>
-                <div class="order-item-row">
-                    <span class="label">Создан</span>
-                    <span class="value">${escapeHtml(order.createdAt || "—")}</span>
-                </div>
-                <div class="order-item-row">
-                    <span class="label">Стоимость</span>
-                    <span class="value order-item-price">${formatPrice(order.price || 0)}</span>
-                </div>
-            </div>
-
-            <div class="order-item-actions">
-                <button
-                    class="order-item-btn"
-                    data-action="contact"
-                    data-id="${order.id}"
-                    type="button"
-                >
-                    💬 Связаться
-                </button>
-                <button
-                    class="order-item-btn danger"
-                    data-action="delete"
-                    data-id="${order.id}"
-                    type="button"
-                >
-                    🗑 Отменить
-                </button>
-            </div>
-        </div>
-    `;
-}
-
-function renderEmptyOrders(message) {
-    if (!myOrdersList) return;
-    myOrdersList.innerHTML = `
-        <div class="my-orders-empty">
-            <div class="my-orders-empty-icon">📋</div>
-            <h3>Заказов пока нет</h3>
-            <p>${escapeHtml(message || "Оформите первую заявку — и она появится здесь.")}</p>
-        </div>
-    `;
-}
-
-async function renderMyOrders() {
-    if (!myOrdersList) return;
-
-    myOrdersList.innerHTML = `
-        <div class="my-orders-empty">
-            <div class="my-orders-empty-icon">⏳</div>
-            <p>Загружаем заказы...</p>
-        </div>
-    `;
-
-    try {
-        const data = await apiFetch("/api/orders");
-        const orders = data.orders || [];
-
-        if (orders.length === 0) {
-            renderEmptyOrders();
-            return;
-        }
-
-        myOrdersList.innerHTML = orders.map(renderOrderCard).join("");
-
-        myOrdersList.querySelectorAll(".order-item-btn").forEach((btn) => {
-            btn.addEventListener("click", () => handleOrderAction(btn));
-        });
-    } catch (e) {
-        console.log("renderMyOrders error:", e);
-        if (e.status === 401) {
-            renderEmptyOrders("Откройте приложение через Telegram, чтобы увидеть заказы.");
-        } else {
-            renderEmptyOrders("Не удалось загрузить заказы. Попробуйте позже.");
-        }
-    }
-}
-
-async function handleOrderAction(btn) {
-    const action = btn.dataset.action;
-    const id = btn.dataset.id;
-
-    if (action === "delete") {
-        let confirmed = false;
-
-        if (tg?.showConfirm) {
-            confirmed = await new Promise((resolve) => {
-                tg.showConfirm("Отменить заказ №" + id + "?", resolve);
-            });
-        } else {
-            confirmed = confirm("Отменить заказ №" + id + "?");
-        }
-
-        if (!confirmed) return;
-
-        try {
-            await apiFetch("/api/orders/" + id, { method: "DELETE" });
-            renderMyOrders();
-        } catch (e) {
-            console.log("delete error:", e);
-            if (tg?.showAlert) {
-                tg.showAlert("Не удалось отменить заказ.");
-            } else {
-                alert("Не удалось отменить заказ.");
-            }
-        }
-    } else if (action === "contact") {
-        if (tg?.showAlert) {
-            tg.showAlert("Напишите менеджеру в чат бота.");
-        } else {
-            alert("Напишите менеджеру в чат бота.");
-        }
-    }
-}
 
 /* ========================================
    INIT

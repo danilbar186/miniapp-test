@@ -654,7 +654,7 @@
             </section>
 
 
-            <!-- AREA -->
+            <!-- OBJECT PARAMS -->
 
             <section class="form-section">
 
@@ -667,11 +667,11 @@
                     <div>
 
                         <h3>
-                            Площадь помещения
+                            Параметры объекта
                         </h3>
 
                         <p>
-                            Укажите примерную площадь
+                            Расскажите о помещении
                         </p>
 
                     </div>
@@ -679,22 +679,107 @@
                 </div>
 
 
-                <div class="area-input-wrapper">
+                <div class="object-grid">
 
-                    <input
-                        id="areaInput"
-                        class="area-input"
-                        type="number"
-                        min="1"
-                        max="1000"
-                        value="50"
-                        placeholder="50"
-                        inputmode="numeric"
-                    >
+                    <div class="object-field">
+                        <label for="roomsInput">Комнат</label>
+                        <input
+                            id="roomsInput"
+                            type="number"
+                            min="0"
+                            max="20"
+                            value="2"
+                            inputmode="numeric"
+                        >
+                    </div>
 
-                    <span>
-                        м²
-                    </span>
+                    <div class="object-field">
+                        <label for="bathroomsInput">Санузлов</label>
+                        <input
+                            id="bathroomsInput"
+                            type="number"
+                            min="0"
+                            max="10"
+                            value="1"
+                            inputmode="numeric"
+                        >
+                    </div>
+
+                    <div class="object-field">
+                        <label for="areaInput">Площадь, м²</label>
+                        <input
+                            id="areaInput"
+                            type="number"
+                            min="1"
+                            max="1000"
+                            value="50"
+                            placeholder="50"
+                            inputmode="numeric"
+                        >
+                    </div>
+
+                    <div class="object-field">
+                        <label for="floorInput">Этаж</label>
+                        <input
+                            id="floorInput"
+                            type="number"
+                            min="0"
+                            max="100"
+                            value="1"
+                            inputmode="numeric"
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="toggle-list">
+
+                    <label class="toggle-option">
+                        <input type="checkbox" id="elevatorOption">
+                        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                        <span class="toggle-label">⬆️ Есть лифт</span>                    </label>
+
+                    <label class="toggle-option">
+                        <input type="checkbox" id="petsOption">
+                        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                        <span class="toggle-label">🐾 Есть животные</span>
+                    </label>
+
+                </div>
+
+
+                <div class="dirt-block">
+
+                    <label class="dirt-label">Степень загрязнения</label>
+
+                    <div class="dirt-options">
+
+                        <button
+                            class="dirt-option selected"
+                            data-dirt="light"
+                            type="button"
+                        >
+                            Лёгкое
+                        </button>
+
+                        <button
+                            class="dirt-option"
+                            data-dirt="medium"
+                            type="button"
+                        >
+                            Среднее
+                        </button>
+
+                        <button
+                            class="dirt-option"
+                            data-dirt="heavy"
+                            type="button"
+                        >
+                            Сильное
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -718,7 +803,7 @@
                         </h3>
 
                         <p>
-                            Можно добавить дополнительные услуги
+                            Можно добавить услуги
                         </p>
 
                     </div>
@@ -729,83 +814,66 @@
                 <div class="additional-options">
 
                     <label class="checkbox-option">
-
-                        <input
-                            type="checkbox"
-                            id="windowsOption"
-                            value="windows"
-                        >
-
-                        <span class="custom-checkbox">
-                            ✓
-                        </span>
-
+                        <input type="checkbox" id="windowsOption" value="windows">
+                        <span class="custom-checkbox">✓</span>
                         <span class="checkbox-content">
-
-                            <strong>
-                                Мытьё окон
-                            </strong>
-
-                            <small>
-                                +800 ₽
-                            </small>
-
+                            <strong>Мытьё окон</strong>
+                            <small>+800 ₽</small>
                         </span>
-
                     </label>
 
-
                     <label class="checkbox-option">
-
-                        <input
-                            type="checkbox"
-                            id="fridgeOption"
-                            value="fridge"
-                        >
-
-                        <span class="custom-checkbox">
-                            ✓
-                        </span>
-
+                        <input type="checkbox" id="fridgeOption" value="fridge">
+                        <span class="custom-checkbox">✓</span>
                         <span class="checkbox-content">
-
-                            <strong>
-                                Мытьё холодильника
-                            </strong>
-
-                            <small>
-                                +500 ₽
-                            </small>
-
+                            <strong>Мытьё холодильника</strong>
+                            <small>+500 ₽</small>
                         </span>
-
                     </label>
 
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="ovenOption" value="oven">
+                        <span class="custom-checkbox">✓</span>
+                        <span class="checkbox-content">
+                            <strong>Мытьё духовки</strong>
+                            <small>+400 ₽</small>
+                        </span>
+                    </label>
 
                     <label class="checkbox-option">
-
-                        <input
-                            type="checkbox"
-                            id="ovenOption"
-                            value="oven"
-                        >
-
-                        <span class="custom-checkbox">
-                            ✓
-                        </span>
-
+                        <input type="checkbox" id="balconyOption" value="balcony">
+                        <span class="custom-checkbox">✓</span>
                         <span class="checkbox-content">
-
-                            <strong>
-                                Мытьё духовки
-                            </strong>
-
-                            <small>
-                                +400 ₽
-                            </small>
-
+                            <strong>Балкон / лоджия</strong>
+                            <small>+800 ₽</small>
                         </span>
+                    </label>
 
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="sofaOption" value="sofa">
+                        <span class="custom-checkbox">✓</span>
+                        <span class="checkbox-content">
+                            <strong>Химчистка дивана</strong>
+                            <small>+1 500 ₽</small>
+                        </span>
+                    </label>
+
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="mattressOption" value="mattress">
+                        <span class="custom-checkbox">✓</span>
+                        <span class="checkbox-content">
+                            <strong>Химчистка матраса</strong>
+                            <small>+1 200 ₽</small>
+                        </span>
+                    </label>
+
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="cabinetsOption" value="cabinets">
+                        <span class="custom-checkbox">✓</span>
+                        <span class="checkbox-content">
+                            <strong>Мытьё внутри шкафов</strong>
+                            <small>+1 000 ₽</small>
+                        </span>
                     </label>
 
                 </div>
@@ -819,7 +887,7 @@
                 <div class="form-section-header">
 
                     <span class="step-number">
-                        5
+                        4
                     </span>
 
                     <div>
@@ -862,7 +930,7 @@
                 <div class="form-section-header">
 
                     <span class="step-number">
-                        6
+                        5
                     </span>
 
                     <div>

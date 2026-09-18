@@ -2095,6 +2095,287 @@ html[data-theme="dark"] .my-orders-footer b {
     font-size: 13px;
 }
 
+/* ========================================
+   OBJECT PARAMS
+======================================== */
+
+.object-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-bottom: 14px;
+}
+
+.object-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.object-field label {
+    padding-left: 4px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 0.2px;
+}
+
+.object-field input {
+    width: 100%;
+
+    height: 52px;
+
+    padding:
+        0 14px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    background: var(--card);
+
+    color: var(--text);
+
+    font-size: 15px;
+    font-weight: 600;
+
+    text-align: center;
+
+    transition:
+        border-color var(--transition),
+        background-color var(--transition),
+        color var(--transition),
+        box-shadow var(--transition);
+}
+
+.object-field input:focus {
+    border-color: var(--gold);
+
+    box-shadow:
+        0 0 0 3px var(--primary-light);
+}
+
+.object-field input::-webkit-outer-spin-button,
+.object-field input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.object-field input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+
+/* ========================================
+   TOGGLES (elevator / pets)
+======================================== */
+
+.toggle-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-bottom: 14px;
+}
+
+.toggle-option {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px 16px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    background: var(--card);
+
+    cursor: pointer;
+
+    transition:
+        border-color var(--transition),
+        background-color var(--transition);
+}
+
+.toggle-option:hover {
+    border-color: var(--gold);
+}
+
+.toggle-option input {
+    position: absolute;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+.toggle-track {
+    position: relative;
+
+    width: 44px;
+    height: 26px;
+
+    flex-shrink: 0;
+
+    border-radius: 13px;
+
+    background: var(--card-secondary);
+
+    border: 1px solid var(--border);
+
+    transition:
+        background-color var(--transition),
+        border-color var(--transition);
+}
+
+.toggle-thumb {
+    position: absolute;
+
+    top: 2px;
+    left: 2px;
+
+    width: 20px;
+    height: 20px;
+
+    border-radius: 50%;
+
+    background: #d8d2c4;
+
+    box-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.15);
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease;
+}
+
+.toggle-option input:checked ~ .toggle-track {
+    background:
+        linear-gradient(
+            135deg,
+            var(--gold-bright),
+            var(--gold)
+        );
+
+    border-color: var(--gold);
+}
+
+.toggle-option input:checked ~ .toggle-track .toggle-thumb {
+    transform: translateX(18px);
+
+    background: #ffffff;
+}
+
+.toggle-label {
+    flex: 1;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+html[data-theme="dark"] .toggle-thumb {
+    background: #5a5449;
+}
+
+html[data-theme="dark"] .toggle-option input:checked ~ .toggle-track .toggle-thumb {
+    background: #1a1a1a;
+}
+
+
+/* ========================================
+   DIRT LEVEL
+======================================== */
+
+.dirt-block {
+    display: flex;
+    flex-direction: column;
+
+    gap: 9px;
+}
+
+.dirt-label {
+    padding-left: 4px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 0.2px;
+}
+
+.dirt-options {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 8px;
+}
+
+.dirt-option {
+    height: 46px;
+
+    padding: 0 6px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 13px;
+
+    background: var(--card);
+
+    color: var(--text);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-align: center;
+
+    transition:
+        border-color var(--transition),
+        background-color var(--transition),
+        color var(--transition),
+        transform 0.15s ease;
+}
+
+.dirt-option:hover {
+    border-color: var(--gold);
+}
+
+.dirt-option:active {
+    transform: scale(0.96);
+}
+
+.dirt-option.selected {
+    border-color: var(--gold);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--gold-bright),
+            var(--gold)
+        );
+
+    color: #0f0f0f;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 6px 16px rgba(201, 169, 97, 0.25);
+}
+
+
 
 /* ========================================
    ADDITIONAL OPTIONS
